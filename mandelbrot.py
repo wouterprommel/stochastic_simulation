@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 img_size = 1000
 
 x_axis = np.linspace(-2, 1, img_size)
-y_axis = np.linspace(-1.4, 1.4, img_size)
+y_axis = np.linspace(-1.5, 1.5, img_size)
 image = np.zeros((img_size, img_size, 3)) # x, y, rgb
 max_iteration = 80
 
@@ -22,10 +22,14 @@ for j, x in enumerate(x_axis):
             z = z*z + c
             iter += 1
         image[i, j, 0] = (iter-1)/max_iteration # set red color (0-1)
-        #print(image[i, j, 0])
+
+S = np.sum(image[:, :, 0])
+A = S/(img_size*img_size) * 3*3
+print(f"Area from pixel count: {A=}")
 
 plt.imshow(image)
 plt.show()
+
 
 
 # single value itteration
