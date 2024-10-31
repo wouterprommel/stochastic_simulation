@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def eval_point_mandelbrot(x, y):
-    max_iteration = 30
+def eval_point_mandelbrot(x, y, i):
+    max_iteration = i
     c = complex(x, y)
     z = 0
     iter = 0
@@ -16,18 +16,18 @@ def eval_point_mandelbrot(x, y):
         iter += 1
     return (iter-1)/max_iteration # set red color (0-1)
 
-def mc_area(N):
+def mc_area(N, i):
     # y from -1.5 to 1.5
     # x form -2 to 1
     X = -1.5 + 3*np.random.rand(N)
     Y = -2 + 3*np.random.rand(N)
     evaluations = []
     for x, y in zip(X, Y):
-        eval = eval_point_mandelbrot(x, y) == 1
+        eval = eval_point_mandelbrot(x, y, i) == 1
         evaluations.append(eval)
 
     area = 9 * sum(evaluations) / len(evaluations)
-    print(f"Area from MC: {area=}")
+    #print(f"Area from MC: {area=}")
 
     return area
 
@@ -51,7 +51,7 @@ def pixel_count_area(img_size = 1000):
     plt.imshow(image)
     plt.show()
 
-mc_area(1000000)
+#mc_area(1000000)
 
 # single value itteration
 """ a = 0.28
