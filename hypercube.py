@@ -27,6 +27,8 @@ def hypercube(N):
         x_axis.remove(x)
         y_axis.remove(y)
 
+
+    # Maybe make 1 function for this (this is done in many functions)
     # Supply samples to evaluate mandelbroth
     max_iteration = 50
     evaluations = []
