@@ -5,6 +5,10 @@ import numpy as np
 plt.rcParams['text.usetex'] = True
 
 def convergence(N, i):
+    '''
+    Compute |A_js - A_is| for all j < i
+    return: list
+    '''
     A_list =[]
     A_iN = mandelbrot.mc_area(N, i)
     for j in range(10, i):
@@ -14,11 +18,14 @@ def convergence(N, i):
         A_list.append(A_jN)
 
     A_j_list = np.array(A_list)
-    deviation = A_j_list - A_iN
+    deviation = np.abs(A_j_list - A_iN)
     return deviation
 
 
 def std_mandelbrot(N, i, M=10):
+    '''
+    std of M Areas
+    '''
     list = []
     for n in range(M):
         list.append(mandelbrot.mc_area(N, i))
@@ -26,6 +33,9 @@ def std_mandelbrot(N, i, M=10):
     return std
 
 def sample_std_mandelbrot(N, i, M=10):
+    '''
+    sample variance -- std. so n-1. zelfde als ddof=1 in np.std.
+    '''
     Xi = []
     for n in range(M):
         Xi.append(mandelbrot.mc_area(N, i))
@@ -36,6 +46,10 @@ def sample_std_mandelbrot(N, i, M=10):
     return np.sqrt(sample_var)
 
 def sample_var_from_list(list):
+    '''
+    input: list of area sims
+    output: sample variance
+    '''
     Xi = np.array(list)
     Xmean = Xi.mean()
     sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) - 1)
@@ -63,9 +77,10 @@ def gen_std(N, i, Set_std=0.0015):
     return np.mean(np.array(list)), np.sqrt(S2), n
 
 deviation_n3 = convergence(1e7, 120)
-deviation_n4 = convergence(1e8, 120)
+#deviation_n4 = convergence(1e8, 120)
+print(deviation_n3)
 plt.plot(deviation_n3)
-plt.plot(deviation_n4)
+#plt.plot(deviation_n4)
 plt.xlabel('iterations')
 plt.ylabel('$$A_{j,s} - A_{i,s}$$')
 plt.show()
