@@ -41,35 +41,37 @@ def pixel_count_area(img_size = 1000):
     for j, x in enumerate(x_axis):
         if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
-            color = eval_point_mandelbrot(x, y)
+            color = eval_point_mandelbrot(x, y, 50)
             image[i, j, 0] = color # set red color (0-1)
 
-    S = np.sum(image[:, :, 0])
+    S = np.sum(image[:, :, 0] == 1)
     A = S/(img_size*img_size) * 3*3
     print(f"Area from pixel count: {A=}")
 
     plt.imshow(image)
     plt.show()
 
-#mc_area(1000000)
+if __name__ == "__main__":
+    #mc_area(1000000)
+    #pixel_count_area()
 
-# single value itteration
-""" a = 0.28
-b = 0.03
-xn = 0
-yn = 0
-X = [xn]
-Y = [yn]
-for i in range(100):
-    xnp1 = xn*xn - yn*yn + a # x_{n+1}
-    ynp1 = 2*xn*yn + b # y_{n+1}
-    X.append(xnp1)
-    Y.append(ynp1)
-    xn = xnp1
-    yn = ynp1
+    # single value itteration
+    """ a = 0.28
+    b = 0.03
+    xn = 0
+    yn = 0
+    X = [xn]
+    Y = [yn]
+    for i in range(100):
+        xnp1 = xn*xn - yn*yn + a # x_{n+1}
+        ynp1 = 2*xn*yn + b # y_{n+1}
+        X.append(xnp1)
+        Y.append(ynp1)
+        xn = xnp1
+        yn = ynp1
 
-print(X)
-print(Y)
+    print(X)
+    print(Y)
 
-plt.scatter(X, Y)
-plt.show() """
+    plt.scatter(X, Y)
+    plt.show() """
