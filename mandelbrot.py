@@ -1,5 +1,5 @@
 import Sample_methods
-import hypercube
+#import hypercube
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -52,10 +52,16 @@ def pixel_count_area(img_size = 1000):
     image = np.zeros((img_size, img_size, 3)) # x, y, rgb
     max_iteration = 80
 
+    # To generate inferno map
+    mandelbrot_set = np.zeros((img_size, img_size))
+
     for j, x in enumerate(x_axis):
         if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
-            color = eval_point_mandelbrot(x, y, 50)
+            color = eval_point_mandelbrot(x, y, max_iteration)
+
+            # To generate inferno map
+            mandelbrot_set[i, j] = eval_point_mandelbrot(x, y, max_iteration)
             image[i, j, 0] = color # set red color (0-1)
 
     S = np.sum(image[:, :, 0] == 1)
@@ -63,6 +69,14 @@ def pixel_count_area(img_size = 1000):
     print(f"Area from pixel count: {A=}")
 
     plt.imshow(image)
+    plt.show()
+
+    # To generate inferno map
+    plt.imshow(mandelbrot_set, extent=(-2, 1, -1.5, 1.5), cmap='inferno')
+    plt.colorbar()
+    plt.title('Mandelbrot Fractal')
+    plt.xlabel('Real Part')
+    plt.ylabel('Imaginary Part')
     plt.show()
 
 def timeing():
@@ -74,25 +88,25 @@ def timeing():
 
     print(mc_area(N, 80))
 
-    print (np.round_(time.time() - t, 3), 'sec elapsed')
+    print (np.round(time.time() - t, 3), 'sec elapsed for random mb')
 
     t = time.time()
 
     print(mc_area(N, 80, 'hypercube'))
 
-    print (np.round_(time.time() - t, 3), 'sec elapsed')
+    print (np.round(time.time() - t, 3), 'sec elapsed for hypercube mb')
 
     t = time.time()
 
     print(mc_area(N, 80, 'orthogonal'))
 
-    print (np.round_(time.time() - t, 3), 'sec elapsed')
+    print (np.round(time.time() - t, 3), 'sec elapsed for orthogonal mb')
 
-    t = time.time()
+    #t = time.time()
 
     #print(mc_area(N, 80, 'hyp2')) set func to return samples first
 
-    print (np.round_(time.time() - t, 3), 'sec elapsed')
+    #print (np.round(time.time() - t, 3), 'sec elapsed')
 
 def plot_samples():
     ''' 
@@ -102,14 +116,14 @@ def plot_samples():
     samples = Sample_methods.hypercube(N)
     #samples2 = hypercube.hypercube(N) # set func to return samples first
     plt.scatter(*zip(*samples))
-    plt.scatter(*zip(*samples2))
+    #plt.scatter(*zip(*samples2))
     plt.show()
 
 if __name__ == "__main__":
 
     #plot_samples()
     timeing()
-    #pixel_count_area()
+    pixel_count_area()
 
     # single value itteration
     """ a = 0.28
