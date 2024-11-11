@@ -44,7 +44,7 @@ def mc_area(N, i, method='uniform', std=False):
 
     area = 9 * sum(evaluations) / len(evaluations)
     #print(f"Area from MC: {area=}")
-    std_value = np.std(evaluations, ddof=1) # sample variance
+    std_value = 9 * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
 
     if std == True:
         return area, std_value
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     #plot_samples()
     #timeing()
-    #pixel_count_area()
+    pixel_count_area()
 
     # single value itteration
     """ a = 0.28
