@@ -10,16 +10,18 @@ def convergence(N, i):
     return: list
     '''
     A_list =[]
-    A_iN = mandelbrot.mc_area(N, i)
+    std_list = []
+    A_iN, std = mandelbrot.mc_area(N, i, std=True)
     for j in range(10, i):
         if j % i//2 == 0: print('half')
 
-        A_jN = mandelbrot.mc_area(N, j)
+        A_jN, std = mandelbrot.mc_area(N, j, std=True)
+        std_list.append(std)
         A_list.append(A_jN)
 
     A_j_list = np.array(A_list)
     deviation = np.abs(A_j_list - A_iN)
-    return deviation
+    return deviation, std_list
 
 
 def std_mandelbrot(N, i, M=10):
@@ -76,11 +78,12 @@ def gen_std(N, i, Set_std=0.0015):
 
     return np.mean(np.array(list)), np.sqrt(S2), n
 
-deviation_n3 = convergence(1e7, 120)
-#deviation_n4 = convergence(1e8, 120)
-print(deviation_n3)
-plt.plot(deviation_n3)
-#plt.plot(deviation_n4)
+deviation1, std1 = convergence(1e7, 120)
+deviation2, std2 = convergence(1e8, 120)
+plt.plot(deviation1)
+plt.plot(std1)
+plt.plot(deviation2)
+plt.plot(std2)
 plt.xlabel('iterations')
 plt.ylabel('$$A_{j,s} - A_{i,s}$$')
 plt.show()
