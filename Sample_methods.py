@@ -57,32 +57,34 @@ def orthogonal(N):
     # Sampling ==> choose random point in each square and store them in samples
     for xi, yi in squares:
         x = np.random.uniform(x_axis[xi], x_axis[xi+1])
-        y = np.random.uniform(y_axis[xi], y_axis[xi+1])
+        y = np.random.uniform(y_axis[yi], y_axis[yi+1])
 
         x_samples.append(x)
         y_samples.append(y)
     samples = list(zip(x_samples, y_samples))
     return samples
 
-N=9
-samples = hypercube(N)
-# Supply samples to evaluate mandelbroth
-max_iteration = 50
-evaluations_hyper = []
+if __name__ == "__main__":
+    N= 9
+    samples = hypercube(N)
+    # Supply samples to evaluate mandelbroth
+    max_iteration = 50
+    evaluations_hyper = []
 
-# Generates list of mandelbroth evaluations, that is returned (for now)
-print("for the hypercube case: \n")
-for x, y in samples:
-    evaluation_hyper = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
-    evaluations_hyper.append(evaluation_hyper)
-    print(f"Evaluated point ({x}, {y}): {evaluation_hyper}")
 
-# Supply samples to evaluate mandelbroth
-evaluations_ortho = []
-samples = orthogonal(N)
-# Generates list of mandelbroth evaluations
-print("\nfor the orthogonal case:\n")
-for x, y in samples:
-    evaluation_ortho = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
-    evaluations_ortho.append(evaluation_ortho)
-    print(f"Evaluated point ({x}, {y}): {evaluation_ortho}")
+    # Generates list of mandelbroth evaluations, that is returned (for now)
+    print("for the hypercube case: \n")
+    for x, y in samples:
+        evaluation_hyper = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
+        evaluations_hyper.append(evaluation_hyper)
+        print(f"Evaluated point ({x}, {y}): {evaluation_hyper}")
+
+    # Supply samples to evaluate mandelbroth
+    evaluations_ortho = []
+    samples = orthogonal(N)
+    # Generates list of mandelbroth evaluations
+    print("\nfor the orthogonal case:\n")
+    for x, y in samples:
+        evaluation_ortho = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
+        evaluations_ortho.append(evaluation_ortho)
+        print(f"Evaluated point ({x}, {y}): {evaluation_ortho}")
