@@ -5,7 +5,7 @@ import Sample_methods as sm
 
 sample_sizes = [80**2, 90**2, 100**2, 110**2, 120**2, 130**2, 140**2, 150**2, 160**2, 170**2, 180**2, 190**2, 200**2]	
 max_iter = 80
-
+pixel_area = A=1.5536880000000002
 uniform_areas = []
 uniform_errors = []
 hypercube_areas = []
@@ -29,13 +29,13 @@ for s in sample_sizes:
 
 plt.figure(figsize=(12, 8))
 method_names = ['Uniform', 'Hypercube', 'Orthogonal']
-colors = ['red', 'green', 'blue']
+colors = ['tab:blue', 'tab:green', 'tab:red', "tab:purple"]
 markers = ['o', 's', '^']
 
 plt.errorbar(sample_sizes, uniform_areas, yerr=uniform_errors, label='Uniform sampling', color=colors[0], marker='o', linestyle='-', capsize=5)
 plt.errorbar(sample_sizes, hypercube_areas, yerr=hypercube_errors, label='Hypercube sampling', color=colors[1], marker='s', linestyle='-', capsize=5)
 plt.errorbar(sample_sizes, ortho_areas, yerr=ortho_errors, label='Orthogonal sampling', color=colors[2], marker='^', linestyle='-', capsize=5)
-
+plt.axhline(y = pixel_area, color = colors[3], linestyle = '--', label = "Pixel Area") 
 plt.xlabel('Number of Samples', fontsize=14)
 plt.ylabel('Estimated Area', fontsize=14)
 plt.title('Estimated Area vs Number of Samples', fontsize=16)
@@ -44,15 +44,19 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-std_uniform = np.std(uniform_areas, ddof=1)
-mean_uniform = np.mean(uniform_areas)
-std_hypercube = np.std(hypercube_areas, ddof=1)
-mean_hypercube = np.mean(hypercube_areas)
-std_ortho = np.std(ortho_areas, ddof=1)
-mean_ortho = np.mean(ortho_areas)
-print(f"""The mean of the estimated areas for the uniform sampling is {mean_uniform}""")
-print(f"""The standard deviation of the estimated areas for the uniform sampling is {std_uniform}""")
-print(f"""The mean of the estimated areas for the hypercube sampling is {mean_hypercube}""")
-print(f"""The standard deviation of the estimated areas for the hypercube sampling is {std_hypercube}""")
-print(f"""The mean of the estimated areas for the orthogonal sampling is {mean_ortho}""")
-print(f"""The standard deviation of the estimated areas for the orthogonal sampling is {std_ortho}""")
+def error_evaluation(area, pixel_area):
+    mean_area = np.mean(area)
+    std_area = np.std(area, ddof=1)
+    print(f"""The mean of the estimated areas is {mean_area}""")	
+    abs_error = np.abs(mean_area - pixel_area) # just an estimate of the average absolute error
+    rel_error = abs_error / pixel_area * 100 # in percentage
+    print(f"""The absolute error is {abs_error}""")
+    print(f"""The relative error is {rel_error}""")
+    return abs_error, rel_error, mean_area, std_area
+print("Uniform sampling:")
+error_evaluation(uniform_areas, pixel_area)
+print("Hypercube sampling:")
+error_evaluation(hypercube_areas, pixel_area)
+print("Orthogonal sampling:")
+error_evaluation(ortho_areas, pixel_area)
+
