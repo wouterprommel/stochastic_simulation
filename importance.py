@@ -37,7 +37,7 @@ def importance_space(img_size, max_iteration):
     plt.show()
 
     # Get the paths of the filled contour areas
-    paths = [Path(p.vertices) for collection in paths.collections for p in collection.get_paths()]
+    paths = [Path(p.vertices) for collection in area.collections for p in collection.get_paths()]
 
     return paths
 
@@ -70,8 +70,11 @@ def importance_sample(paths, sample_size):
         sample = (x, y)
 
         # How iterate over paths?
-        if sample in paths:
+        # Special function in path (contains_point)
+        if any(path.contains_point(sample) for path in paths):
             #append sample
+            samples.append(sample)
+    print("Samples: ", samples)
 
 
 
