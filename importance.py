@@ -56,6 +56,8 @@ def importance_area(paths):
 
 
 # Sample from within the area
+#Cannot sample only in area, so points are taken randomly 
+# but added only when inside the area
 def importance_sample(paths, sample_size):
     """Generates randomly assigned points within the area."""
 
@@ -74,16 +76,8 @@ def importance_sample(paths, sample_size):
         if any(path.contains_point(sample) for path in paths):
             #append sample
             samples.append(sample)
-    print("Samples: ", len(samples))
 
-
-
-    #Cannot sample only in area, so points are taken randomly 
-    # but added only when inside the area
-
-
-
-    return
+    return samples
 
 
 if __name__ == "__main__":
