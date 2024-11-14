@@ -30,19 +30,16 @@ def importance_space(img_size, max_iteration, Z_boundary):
     area = Z >= Z_boundary
     area_filled = binary_fill_holes(area)
 
-    #area_count = np.sum(area_filled)
-    #print("area count: ", area_count)
-    
     # Check if it works
     #truth = np.sum(area_filled)
     #print("truth: ", truth)
 
-    plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.5)
+    '''plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.5)
     plt.xlabel('Real Part')
     plt.ylabel('Imaginary Part')
     plt.title(f'Mandelbrot Set Approximation (Max Iterations = {max_iteration})')
     plt.gca().set_aspect('equal')
-    plt.show()
+    plt.show()'''
 
     return area_filled
 
@@ -53,14 +50,13 @@ def importance_area(area_filled, img_size):
     x_axis = np.linspace(-2, 1, img_size)
     y_axis = np.linspace(-1.5, 1.5, img_size)
 
+    # Calculate the area of a single pixel
     dx = x_axis[1] - x_axis[0]
     dy = y_axis[1] - y_axis[0]
-
     pixel_area = dx * dy
 
     # Calculate total area of the filled mask
     area = np.sum(area_filled) * pixel_area
-    
     print("Total area: ", area)
 
     return area
@@ -69,11 +65,14 @@ def importance_area(area_filled, img_size):
 # Sample from within the area
 #Cannot sample only in area, so points are taken randomly 
 # but added only when inside the area
-def importance_sample_random(area, sample_size):
-    """Generates randomly assigned points within the area."""
-
+def importance_sample_random(area_filled, sample_size, img_size):
+    """Randomly generates points and adds them to samples if they are within the predefined area."""
     x_min, x_max = -2, 1
     y_min, y_max = -1.5, 1.5
+
+    # Calculate pixel width and height for precise indexing
+    dx = (x_max - x_min) / img_size
+    dy = (y_max - y_min) / img_size
 
     samples = []
 
@@ -81,12 +80,17 @@ def importance_sample_random(area, sample_size):
         x = np.random.uniform(x_min, x_max)
         y = np.random.uniform(y_min, y_max)
 
-        sample = (x, y)
+        # fix pixel indexes for x and y to determine if sample falls within
+        x_idx = int((x - x_min) / dx)
+        y_idx = int((y - y_min) / dy)
 
-        #If the sample is within area 
-        # append the sample to samples
+        # Check if sample is within pixel for which value is True (part of area)
+        if 0 <= x_idx < img_size and 0 <= y_idx < img_size:
+            if area_filled[y_idx, x_idx]: 
+                samples.append((x, y))
 
     return samples
+
 
 
 def importance_stdev(samples, i, area, std=False):
@@ -107,17 +111,24 @@ def importance_stdev(samples, i, area, std=False):
 
 if __name__ == "__main__":
 
-    img_size = 100
+    img_size = 10
     max_iteration = 5
-    sample_size = 1000
-    i = 1000
+    sample_size = 2000
 
     area_filled = importance_space(img_size, max_iteration, 0.95)
-    #print("area filled: ", area_filled)
     importance_area(area_filled, img_size)
+    samples = importance_sample_random(area_filled, sample_size, img_size)
 
-    #samples = importance_sample_random(paths, sample_size)
+    sample_x, sample_y = zip(*samples)
 
-    #importance_stdev(samples, i, paths, std=False)
+    plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.25)
+    plt.scatter(sample_x, sample_y, color='red', s=5, label="Samples")
+    plt.xlabel('Real Part')
+    plt.ylabel('Imaginary Part')
+    plt.title(f'Sampled Points within Mandelbrot Set (Max Iterations = {max_iteration})')
+    plt.gca().set_aspect('equal')
+    plt.legend()
+    plt.show()
+
 
 
