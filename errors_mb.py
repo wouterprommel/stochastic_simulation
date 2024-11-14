@@ -2,7 +2,7 @@ import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.rcParams['text.usetex'] = True
+#plt.rcParams['text.usetex'] = True
 
 def convergence(N, i):
     '''
@@ -76,13 +76,14 @@ def gen_std(N, i, Set_std=0.0015):
 
     return np.mean(np.array(list)), np.sqrt(S2), n
 
+
 deviation_n3 = convergence(1e7, 120)
 #deviation_n4 = convergence(1e8, 120)
 print(deviation_n3)
 plt.plot(deviation_n3)
 #plt.plot(deviation_n4)
 plt.xlabel('iterations')
-plt.ylabel('$$A_{j,s} - A_{i,s}$$')
+plt.ylabel('$A_{j,s} - A_{i,s}$')
 plt.show()
 
 # X, S, n = gen_std(10000, 80)
