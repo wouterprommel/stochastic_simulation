@@ -107,17 +107,38 @@ def importance_stdev(samples, i, area, std=False):
         return area, std_value
     else: 
         return area
+    
+
+def importance_mb_area(area_filled, sample_size, img_size, i, area, std=False):
+    
+    samples = importance_sample_random(area_filled, sample_size, img_size)
+
+    evaluations = []
+    for x, y in samples:
+        eval = mandelbrot.eval_point_mandelbrot(x, y, i) == 1
+        evaluations.append(eval)
+
+    area = area * sum(evaluations) / len(evaluations)
+    #print(f"Area from MC: {area=}")
+    std_value = area * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
+
+    if std == True:
+        return area, std_value
+    else: 
+        return area
 
 
 if __name__ == "__main__":
 
-    img_size = 10
-    max_iteration = 5
+    img_size = 1000
+    max_iteration = 10
     sample_size = 2000
+    i = 80
 
     area_filled = importance_space(img_size, max_iteration, 0.95)
-    importance_area(area_filled, img_size)
+    area = importance_area(area_filled, img_size)
     samples = importance_sample_random(area_filled, sample_size, img_size)
+    print(importance_mb_area(area_filled, sample_size, img_size, i, area, std=False))
 
     sample_x, sample_y = zip(*samples)
 
