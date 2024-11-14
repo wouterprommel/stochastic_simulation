@@ -37,7 +37,7 @@ def importance_space(img_size, max_iteration):
     plt.show()
 
     # Get the paths of the filled contour areas
-    paths = [Path(p.vertices) for collection in area.collections for p in collection.get_paths()]
+    paths = area.get_paths()
 
     return paths
 
@@ -74,7 +74,7 @@ def importance_sample(paths, sample_size):
         if any(path.contains_point(sample) for path in paths):
             #append sample
             samples.append(sample)
-    print("Samples: ", samples)
+    print("Samples: ", len(samples))
 
 
 
@@ -90,19 +90,9 @@ if __name__ == "__main__":
 
     img_size = 50
     max_iteration = 5
+    sample_size = 1000
 
-    importance_space(img_size, max_iteration)
+    paths = importance_space(img_size, max_iteration)
+    importance_sample(paths, sample_size)
 
-
-
-
-
-
-
-
-# Approach 2:
-"""
-1. Look at different areas to see how they converge and what the difference is between them.
-
-"""
 
