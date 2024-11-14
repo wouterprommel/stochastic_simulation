@@ -13,44 +13,45 @@
 import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.spatial import ConvexHull
 
 def importance_space(img_size, max_iteration):
     x_axis = np.linspace(-2, 1, img_size)
     y_axis = np.linspace(-1.5, 1.5, img_size)
     sample_space = []
+    X, Y = np.meshgrid(x_axis, y_axis)
+    Z = np.zeros(X.shape)
 
     for j, x in enumerate(x_axis):
         if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
-            eval = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
-            #print("eval: ", eval)
 
-            # Add to sample list if eval == 1
+            # To generate inferno map
+            Z[i, j] = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
+
             if eval == 1:
                 sample_space.append([j, i])
             
     x_vals = [point[0] for point in sample_space]
     y_vals = [point[1] for point in sample_space]
 
-    # Genereer de scatter plot
-    plt.scatter(x_vals, y_vals, s=1)  # s=1 om puntgrootte kleiner te maken
+    #plt.scatter(x_vals, y_vals, s=0.5)
 
-    # To generate inferno map
-    #plt.scatter(sample_space)
+    plt.imshow(Z, extent=(-2, 1, -1.5, 1.5), origin='lower', cmap='inferno')
+    
     plt.colorbar()
     plt.title('Sample space')
     plt.xlabel('Real Part')
     plt.ylabel('Imaginary Part')
     plt.show()
+    print("Z: ", Z)
 
     return
 
 
 if __name__ == "__main__":
 
-    #plot_samples()
-    #timeing()
-    importance_space(1000, 20)
+    importance_space(1000, 10)
 
 
 
