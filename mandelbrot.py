@@ -3,6 +3,7 @@ import Sample_methods
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from sklearn.metrics import silhouette_score
 
 
 def eval_point_mandelbrot(x, y, i):
@@ -20,7 +21,7 @@ def eval_point_mandelbrot(x, y, i):
     return (iter-1)/max_iteration # set red color (0-1)
 
 
-def mc_area(N, i, method='uniform'):
+def mc_area(N, i, method='uniform', std=False):
     # y from -1.5 to 1.5
     # x form -2 to 1
     n = int(np.sqrt(N))
@@ -31,7 +32,8 @@ def mc_area(N, i, method='uniform'):
     elif method == 'hypercube':
         samples = Sample_methods.hypercube(N)
     elif method == 'hyp2':
-        samples = hypercube.hypercube(N)
+        pass
+        #samples = hypercube.hypercube(N)
     elif method == 'orthogonal':
         samples = Sample_methods.orthogonal(N)
 
@@ -42,8 +44,12 @@ def mc_area(N, i, method='uniform'):
 
     area = 9 * sum(evaluations) / len(evaluations)
     #print(f"Area from MC: {area=}")
+    std_value = 9 * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
 
-    return area
+    if std == True:
+        return area, std_value
+    else: 
+        return area
 
 def pixel_count_area(img_size = 1000):
 
@@ -112,17 +118,18 @@ def plot_samples():
     ''' 
     plot sample points
     '''
-    N = int(1e3)
+    N = int(25)
     samples = Sample_methods.hypercube(N)
     #samples2 = hypercube.hypercube(N) # set func to return samples first
+    samples2 = Sample_methods.orthogonal(N) # set func to return samples first
     plt.scatter(*zip(*samples))
-    #plt.scatter(*zip(*samples2))
+    plt.scatter(*zip(*samples2))
     plt.show()
 
 if __name__ == "__main__":
 
     #plot_samples()
-    timeing()
+    #timeing()
     pixel_count_area()
 
     # single value itteration
