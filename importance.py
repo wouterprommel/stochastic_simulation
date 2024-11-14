@@ -67,6 +67,12 @@ def importance_sample(paths, sample_size):
     while len(samples) < sample_size:
         x = np.random.uniform(x_min, x_max)
         y = np.random.uniform(y_min, y_max)
+        sample = (x, y)
+
+        # How iterate over paths?
+        if sample in paths:
+            #append sample
+
 
 
     #Cannot sample only in area, so points are taken randomly 
