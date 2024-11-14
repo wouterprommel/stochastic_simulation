@@ -55,7 +55,26 @@ def importance_area(paths):
     return area_total
 
 
+# Sample from within the area
+def importance_sample(paths, sample_size):
+    """Generates randomly assigned points within the area."""
 
+    x_min, x_max = -2, 1
+    y_min, y_max = -1.5, 1.5
+
+    samples = []
+
+    while len(samples) < sample_size:
+        x = np.random.uniform(x_min, x_max)
+        y = np.random.uniform(y_min, y_max)
+
+
+    #Cannot sample only in area, so points are taken randomly 
+    # but added only when inside the area
+
+
+
+    return
 
 
 if __name__ == "__main__":
