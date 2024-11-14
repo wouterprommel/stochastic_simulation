@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from matplotlib.path import Path
+from matplotlib.patches import PathPatch
 
 def importance_space(img_size, max_iteration):
     x_axis = np.linspace(-2, 1, img_size)
@@ -41,16 +42,18 @@ def importance_space(img_size, max_iteration):
     return paths
 
 
+# Find the area (check paths in plt)
+def importance_area(paths):
+    """Calculate the area of the filled contour Mendelbroth approximation."""
+    area_total = 0
 
-    # Define the bounds of the area of interest
-    interest_area_indices = np.argwhere((Z >= 0.95) & (Z <= 1.0))
-    x_interest_min, x_interest_max = x_axis[interest_area_indices[:, 1].min()], x_axis[interest_area_indices[:, 1].max()]
-    y_interest_min, y_interest_max = y_axis[interest_area_indices[:, 0].min()], y_axis[interest_area_indices[:, 0].max()]
+    # iterate over the paths and add areas for each path to the total
+    for path in paths:
+        area_part = PathPatch(path)
+        area_total += area_part.get_path().area()
 
-    print("x_interest_min: ", x_interest_min)
-    print("x_interest_max: ", x_interest_max)
-    print("y_interest_min: ", y_interest_min)
-    print("y_interest_max: ", y_interest_max)
+    return area_total
+
 
 
 
