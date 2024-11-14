@@ -13,11 +13,10 @@
 import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.ndimage import binary_fill_holes
 
-from matplotlib.path import Path
-from matplotlib.patches import PathPatch
 
-def importance_space(img_size, max_iteration):
+def importance_space(img_size, max_iteration, Z_boundary):
     x_axis = np.linspace(-2, 1, img_size)
     y_axis = np.linspace(-1.5, 1.5, img_size)
     X, Y = np.meshgrid(x_axis, y_axis)
@@ -26,39 +25,51 @@ def importance_space(img_size, max_iteration):
     for j, x in enumerate(x_axis):
         if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
-
             Z[i, j] = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
+    
+    area = Z >= Z_boundary
+    area_filled = binary_fill_holes(area)
 
-    area = plt.contourf(X, Y, Z, levels=np.linspace(0.95, 1.0, 5), colors='red')
+    #area_count = np.sum(area_filled)
+    #print("area count: ", area_count)
+    
+    # Check if it works
+    #truth = np.sum(area_filled)
+    #print("truth: ", truth)
+
+    plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.5)
     plt.xlabel('Real Part')
     plt.ylabel('Imaginary Part')
     plt.title(f'Mandelbrot Set Approximation (Max Iterations = {max_iteration})')
     plt.gca().set_aspect('equal')
     plt.show()
 
-    # Get the paths of the filled contour areas
-    paths = area.get_paths()
-
-    return paths
+    return area_filled
 
 
 # Find the area (check paths in plt)
-def importance_area(paths):
+def importance_area(area_filled, img_size):
     """Calculate the area of the filled contour Mendelbroth approximation."""
-    area_total = 0
+    x_axis = np.linspace(-2, 1, img_size)
+    y_axis = np.linspace(-1.5, 1.5, img_size)
 
-    # iterate over the paths and add areas for each path to the total
-    for path in paths:
-        area_part = PathPatch(path)
-        area_total += area_part.get_path().area()
+    dx = x_axis[1] - x_axis[0]
+    dy = y_axis[1] - y_axis[0]
 
-    return area_total
+    pixel_area = dx * dy
+
+    # Calculate total area of the filled mask
+    area = np.sum(area_filled) * pixel_area
+    
+    print("Total area: ", area)
+
+    return area
 
 
 # Sample from within the area
 #Cannot sample only in area, so points are taken randomly 
 # but added only when inside the area
-def importance_sample(paths, sample_size):
+def importance_sample_random(area, sample_size):
     """Generates randomly assigned points within the area."""
 
     x_min, x_max = -2, 1
@@ -69,24 +80,44 @@ def importance_sample(paths, sample_size):
     while len(samples) < sample_size:
         x = np.random.uniform(x_min, x_max)
         y = np.random.uniform(y_min, y_max)
+
         sample = (x, y)
 
-        # How iterate over paths?
-        # Special function in path (contains_point)
-        if any(path.contains_point(sample) for path in paths):
-            #append sample
-            samples.append(sample)
+        #If the sample is within area 
+        # append the sample to samples
 
     return samples
 
 
+def importance_stdev(samples, i, area, std=False):
+    evaluations = []
+    for x, y in samples:
+        eval = mandelbrot.eval_point_mandelbrot(x, y, i) == 1
+        evaluations.append(eval)
+
+    area_total = (importance_area(area)) * sum(evaluations) / len(evaluations)
+    print(f"Area from MC: {area_total=}")
+    std_value = (importance_area(area)) * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
+
+    if std == True:
+        return area, std_value
+    else: 
+        return area
+
+
 if __name__ == "__main__":
 
-    img_size = 50
+    img_size = 100
     max_iteration = 5
     sample_size = 1000
+    i = 1000
 
-    paths = importance_space(img_size, max_iteration)
-    importance_sample(paths, sample_size)
+    area_filled = importance_space(img_size, max_iteration, 0.95)
+    #print("area filled: ", area_filled)
+    importance_area(area_filled, img_size)
+
+    #samples = importance_sample_random(paths, sample_size)
+
+    #importance_stdev(samples, i, paths, std=False)
 
 
