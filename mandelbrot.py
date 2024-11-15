@@ -1,5 +1,5 @@
 import Sample_methods
-import Rejection
+import Masking
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -37,11 +37,12 @@ def mc_area(N, i, method='uniform', std=False):
     elif method == 'orthogonal':
         samples = Sample_methods.orthogonal(N)
 
-    elif method == 'rejection':
-        img_size = 100
+    elif method == 'masking':
+        img_size = 25
         i_space = 8
-        Z_boundary = 0.95
-        area_total, _, samples = Rejection.rejection(img_size, i_space, Z_boundary, N)
+        Z_boundary = 1
+        area_total, _, samples = Masking.masking(img_size, i_space, Z_boundary, N)
+        N = len(samples)
 
     evaluations = []
     for x, y in samples:
@@ -111,8 +112,8 @@ def timeing():
     print (np.round(time.time() - t, 3), 'sec elapsed for orthogonal mb')
 
     t = time.time()
-    print(mc_area(N, 80, 'rejection'))
-    print (np.round(time.time() - t, 3), 'sec elapsed for rejection mb')
+    print(mc_area(N, 80, 'masking'))
+    print (np.round(time.time() - t, 3), 'sec elapsed for masking orthogonal mb')
 
 
 def plot_samples():
