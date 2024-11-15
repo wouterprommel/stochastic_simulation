@@ -2,9 +2,11 @@ import mandelbrot
 import numpy as np
 import time
 import pandas as pd
-import Rejection
+import Masking
 
-def test_rejection_stochasticity(trials=10):
+TRUE_MANDELBROT_AREA = 1.506593
+
+def test_masking_stochasticity(trials=10):
     np.random.seed(None)
     img_sizes = [10, 50, 100]
     i_spaces = [5, 8, 10]
@@ -19,7 +21,7 @@ def test_rejection_stochasticity(trials=10):
                 times = []
                 for _ in range(trials):
                     start_time = time.time()
-                    area_total, _, samples = Rejection.rejection(img_size, i_space, Z_boundary, sample_size)
+                    area_total, _, samples = Masking.masking(img_size, i_space, Z_boundary, sample_size)
                     evaluations = []
                     for x, y in samples:
                         eval = mandelbrot.eval_point_mandelbrot(x, y, sample_size) == 1
@@ -36,16 +38,21 @@ def test_rejection_stochasticity(trials=10):
                 std_area = np.std(areas, ddof=1)  # Sample standard deviation
                 mean_time = np.mean(times)
 
+                error = abs(mean_area - TRUE_MANDELBROT_AREA)
+
                 results.append({
                     'img_size': img_size,
                     'i_space': i_space,
                     'Z_boundary': Z_boundary,
                     'mean_area': mean_area,
                     'std_area': std_area,
-                    'mean_time': mean_time
+                    'mean_time': mean_time,
+                    'error': error
                 })
 
     df = pd.DataFrame(results)
-    print(df.sort_values(by='std_area'))
+    print(df.sort_values(by='error'))
 
-test_rejection_stochasticity()
+
+
+test_masking_stochasticity()
