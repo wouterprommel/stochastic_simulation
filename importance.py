@@ -1,14 +1,10 @@
-# Approach 1: 
-""" 
-1. sample area (hypercube/stochastically)
-2. Define area which to sample from (such as where iterations > 1)
-    - bepaal cutoff
-    - donut distribution?
-3. Perform sampling as usual
-    4. only sample from sample space
-        - how to define and check?
-        - come up with sample from sample space or check after getting random sample?
-"""
+'''
+Checks:
+1. Check if pixelarea correct (checked)
+2. Check if 100 pixels are looped over for Z (checked and correct)
+3. Check id pixels and pixels filled correct (correct)
+4. check if area calc correct (checked)
+'''
 
 import mandelbrot
 import matplotlib.pyplot as plt
@@ -17,31 +13,51 @@ from scipy.ndimage import binary_fill_holes
 
 
 def importance_space(img_size, max_iteration, Z_boundary):
+    """Generates an area within which to sample based on maximum iterations and Z boundary."""
     x_axis = np.linspace(-2, 1, img_size)
     y_axis = np.linspace(-1.5, 1.5, img_size)
     X, Y = np.meshgrid(x_axis, y_axis)
     Z = np.zeros(X.shape)
-
+    x_iterate = 0
     for j, x in enumerate(x_axis):
+        
         if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
             Z[i, j] = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
+    print("Z: ", Z)
+
     
-    area = Z >= Z_boundary
-    area_filled = binary_fill_holes(area)
+    # Generates a list of pixels/boxes where Z values >= the Z boundary is set to True
+    # Fills in gaps within the area so that it is enclosed
+    pixels = Z >= Z_boundary
+    pixels_filled = binary_fill_holes(pixels)
 
-    # Check if it works
-    #truth = np.sum(area_filled)
-    #print("truth: ", truth)
+    # Count the number of filled pixels in the area
+    pixel_nr = np.sum(pixels_filled)
+    print("pixel nr: ", pixel_nr)
 
-    '''plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.5)
+
+    """Calculate the area of the filled contour Mendelbroth approximation."""
+    # Calculate the area of a single pixel
+    dx = abs(x_axis[1]) - abs(x_axis[0])
+    dy = abs(y_axis[1]) - abs(y_axis[0])
+    pixel_area = abs(dx * dy)
+
+    # Calculate total area
+    area = pixel_nr * pixel_area
+    print("pixel numbers: ", pixel_area)
+    print(" image area: ", 9)
+    print("Total area: ", area)
+
+
+    ''' plt.imshow(pixels_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.5)
     plt.xlabel('Real Part')
     plt.ylabel('Imaginary Part')
     plt.title(f'Mandelbrot Set Approximation (Max Iterations = {max_iteration})')
     plt.gca().set_aspect('equal')
     plt.show()'''
 
-    return area_filled
+    return pixels_filled
 
 
 # Find the area (check paths in plt)
@@ -130,17 +146,17 @@ def importance_mb_area(area_filled, sample_size, img_size, i, area, std=False):
 
 if __name__ == "__main__":
 
-    img_size = 1000
+    img_size = 10
     max_iteration = 10
     sample_size = 2000
     i = 80
 
     area_filled = importance_space(img_size, max_iteration, 0.95)
-    area = importance_area(area_filled, img_size)
-    samples = importance_sample_random(area_filled, sample_size, img_size)
-    print(importance_mb_area(area_filled, sample_size, img_size, i, area, std=False))
+    #area = importance_area(area_filled, img_size)
+    #samples = importance_sample_random(area_filled, sample_size, img_size)
+    #print(importance_mb_area(area_filled, sample_size, img_size, i, area, std=False))
 
-    sample_x, sample_y = zip(*samples)
+    '''sample_x, sample_y = zip(*samples)
 
     plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.25)
     plt.scatter(sample_x, sample_y, color='red', s=5, label="Samples")
@@ -149,7 +165,7 @@ if __name__ == "__main__":
     plt.title(f'Sampled Points within Mandelbrot Set (Max Iterations = {max_iteration})')
     plt.gca().set_aspect('equal')
     plt.legend()
-    plt.show()
+    plt.show()'''
 
 
 
