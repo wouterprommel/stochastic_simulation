@@ -3,7 +3,6 @@ import Sample_methods
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-from sklearn.metrics import silhouette_score
 
 
 def eval_point_mandelbrot(x, y, i):
