@@ -1,4 +1,5 @@
 import Sample_methods
+import importance
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -23,26 +24,35 @@ def mc_area(N, i, method='uniform', std=False):
     # y from -1.5 to 1.5
     # x form -2 to 1
     n = int(np.sqrt(N))
+
     if method == 'uniform':
         X = -1.5 + 3*np.random.rand(n)
         Y = -2 + 3*np.random.rand(n)
         samples = zip(X, Y)
+        area_total = 9
+
     elif method == 'hypercube':
         samples = Sample_methods.hypercube(N)
-    elif method == 'hyp2':
-        pass
-        #samples = hypercube.hypercube(N)
+        area_total = 9
+
     elif method == 'orthogonal':
         samples = Sample_methods.orthogonal(N)
+        area_total = 9
+
+    elif method == 'importance':
+        img_size = 100
+        i_space = 5
+        Z_boundary = 0.95
+        area_total, samples = importance.importance(img_size, i_space, Z_boundary, N)
 
     evaluations = []
     for x, y in samples:
         eval = eval_point_mandelbrot(x, y, i) == 1
         evaluations.append(eval)
 
-    area = 9 * sum(evaluations) / len(evaluations)
+    area = area_total * sum(evaluations) / len(evaluations)
     #print(f"Area from MC: {area=}")
-    std_value = 9 * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
+    std_value = area_total * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
 
     if std == True:
         return area, std_value
@@ -106,11 +116,10 @@ def timeing():
 
     print (np.round(time.time() - t, 3), 'sec elapsed for orthogonal mb')
 
-    #t = time.time()
 
-    #print(mc_area(N, 80, 'hyp2')) set func to return samples first
-
-    #print (np.round(time.time() - t, 3), 'sec elapsed')
+    t = time.time()
+    print(mc_area(N, 80, 'importance'))
+    print (np.round(time.time() - t, 3), 'sec elapsed for importance mb')
 
 def plot_samples():
     ''' 
@@ -127,8 +136,8 @@ def plot_samples():
 if __name__ == "__main__":
 
     #plot_samples()
-    #timeing()
-    pixel_count_area()
+    #pixel_count_area()
+    timeing()
 
     # single value itteration
     """ a = 0.28

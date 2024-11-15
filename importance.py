@@ -12,11 +12,14 @@ import numpy as np
 from scipy.ndimage import binary_fill_holes
 
 
-def importance_space(img_size, max_iteration, Z_boundary):
+def importance(img_size, i_space, Z_boundary, sample_size):
     """ 
     Generates a space within which to sample based on maximum iterations and Z boundary.
     Calculates the area of the space.
-    Randomly generates points and adds them to samples if they are within the predefined area."""
+    Randomly generates points and adds them to samples if they are within the predefined area.
+    Larger image size means more pixels and more accurate sample space.
+    higher iterations is more accurate and complex sample space."""
+
     x_min, x_max = -2, 1
     y_min, y_max = -1.5, 1.5
     x_axis = np.linspace(x_min, x_max, img_size)
@@ -28,9 +31,8 @@ def importance_space(img_size, max_iteration, Z_boundary):
     Z = np.zeros(X.shape)
 
     for j, x in enumerate(x_axis):
-        if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
-            Z[i, j] = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
+            Z[i, j] = mandelbrot.eval_point_mandelbrot(x, y, i_space)
 
 
     # Generates a list of pixels/boxes where Z values >= the Z boundary is set to True
@@ -72,58 +74,25 @@ def importance_space(img_size, max_iteration, Z_boundary):
             if pixels_filled[y_idx, x_idx]: 
                 samples.append((x, y))
 
-    return area, pixels_filled, samples
+    return area, samples
 
 
-
-def importance_stdev(samples, i, area, std=False):
-    evaluations = []
-    for x, y in samples:
-        eval = mandelbrot.eval_point_mandelbrot(x, y, i) == 1
-        evaluations.append(eval)
-
-    area_total = (importance_area(area)) * sum(evaluations) / len(evaluations)
-    print(f"Area from MC: {area_total=}")
-    std_value = (importance_area(area)) * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
-
-    if std == True:
-        return area, std_value
-    else: 
-        return area
-    
-
-def importance_mb_area(area_filled, sample_size, img_size, i, area, std=False):
-    
-    samples = importance_sample_random(area_filled, sample_size, img_size)
-
-    evaluations = []
-    for x, y in samples:
-        eval = mandelbrot.eval_point_mandelbrot(x, y, i) == 1
-        evaluations.append(eval)
-
-    area = area * sum(evaluations) / len(evaluations)
-    #print(f"Area from MC: {area=}")
-    std_value = area * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
-
-    if std == True:
-        return area, std_value
-    else: 
-        return area
-
-
-if __name__ == "__main__":
+'''if __name__ == "__main__":
 
     img_size = 30
-    max_iteration = 10
+    i_space = 10
     sample_size = 100
     i = 80
 
-    area_filled = importance_space(img_size, max_iteration, 0.95)
+    # Boundary for which to accept area pixels/boxes
+    Z_boundary = 0.95
+
+    area_filled = importance(img_size, i_space, Z_boundary, sample_size)
     #area = importance_area(area_filled, img_size)
     #samples = importance_sample_random(area_filled, sample_size, img_size)
     #print(importance_mb_area(area_filled, sample_size, img_size, i, area, std=False))
 
-    '''sample_x, sample_y = zip(*samples)
+    sample_x, sample_y = zip(*samples)
 
     plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.25)
     plt.scatter(sample_x, sample_y, color='red', s=5, label="Samples")
