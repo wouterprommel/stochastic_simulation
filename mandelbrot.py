@@ -1,5 +1,5 @@
 import Sample_methods
-import importance
+import Rejection
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -24,26 +24,24 @@ def mc_area(N, i, method='uniform', std=False):
     # y from -1.5 to 1.5
     # x form -2 to 1
     n = int(np.sqrt(N))
+    area_total = 9
 
     if method == 'uniform':
         X = -1.5 + 3*np.random.rand(n)
         Y = -2 + 3*np.random.rand(n)
         samples = zip(X, Y)
-        area_total = 9
 
     elif method == 'hypercube':
         samples = Sample_methods.hypercube(N)
-        area_total = 9
 
     elif method == 'orthogonal':
         samples = Sample_methods.orthogonal(N)
-        area_total = 9
 
-    elif method == 'importance':
+    elif method == 'rejection':
         img_size = 100
-        i_space = 5
+        i_space = 8
         Z_boundary = 0.95
-        area_total, samples = importance.importance(img_size, i_space, Z_boundary, N)
+        area_total, _, samples = Rejection.rejection(img_size, i_space, Z_boundary, N)
 
     evaluations = []
     for x, y in samples:
@@ -58,6 +56,7 @@ def mc_area(N, i, method='uniform', std=False):
         return area, std_value
     else: 
         return area
+
 
 def pixel_count_area(img_size = 1000):
 
@@ -98,28 +97,23 @@ def timeing():
     Time to sample N amount of points for different sampling methods
     '''
     N = int(1e4)
+
     t = time.time()
-
     print(mc_area(N, 80))
-
     print (np.round(time.time() - t, 3), 'sec elapsed for random mb')
 
     t = time.time()
-
     print(mc_area(N, 80, 'hypercube'))
-
     print (np.round(time.time() - t, 3), 'sec elapsed for hypercube mb')
 
     t = time.time()
-
     print(mc_area(N, 80, 'orthogonal'))
-
     print (np.round(time.time() - t, 3), 'sec elapsed for orthogonal mb')
 
-
     t = time.time()
-    print(mc_area(N, 80, 'importance'))
-    print (np.round(time.time() - t, 3), 'sec elapsed for importance mb')
+    print(mc_area(N, 80, 'rejection'))
+    print (np.round(time.time() - t, 3), 'sec elapsed for rejection mb')
+
 
 def plot_samples():
     ''' 
@@ -132,6 +126,7 @@ def plot_samples():
     plt.scatter(*zip(*samples))
     plt.scatter(*zip(*samples2))
     plt.show()
+
 
 if __name__ == "__main__":
 

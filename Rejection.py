@@ -2,21 +2,8 @@ import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import binary_fill_holes
-
-
-'''def eval_point_mandelbrot(x, y, i):
-    max_iteration = i
-    c = complex(x, y)
-    z = 0
-    iter = 0
-    bounded = True
-    itterating = True
-    while bounded and itterating:
-        bounded = abs(z) <= 2
-        itterating = iter < max_iteration
-        z = z*z + c
-        iter += 1
-    return (iter-1)/max_iteration'''
+import time
+import pandas as pd
 
 
 def rejection(img_size, i_space, Z_boundary, sample_size):
@@ -44,6 +31,50 @@ def rejection(img_size, i_space, Z_boundary, sample_size):
     pixel_area = abs(dx * dy)
     area = pixel_nr * pixel_area
 
+    #samples = samples_only(sample_size, img_size, pixels_filled)
+    samples = samples_reject(sample_size, img_size, pixels_filled)
+
+    return area, pixels_filled, samples
+
+def samples_reject(sample_size, img_size, pixels_filled):
+    """Reject samples if outside of sample space."""
+    samples = []
+
+    x_min, x_max = -2, 1
+    y_min, y_max = -1.5, 1.5
+
+    dx = (x_max - x_min) / img_size
+    dy = (y_max - y_min) / img_size
+
+    # random samples added if
+    while len(samples) < sample_size:
+        x = np.random.uniform(x_min, x_max)
+        y = np.random.uniform(y_min, y_max)
+
+        # fix pixel indexes for x and y to determine if sample falls within
+        x_idx = int((x - x_min) / dx)
+        y_idx = int((y - y_min) / dy)
+
+        # Check if sample is within pixel for which value is True (part of area)
+        if 0 <= x_idx < img_size and 0 <= y_idx < img_size:
+            if pixels_filled[y_idx, x_idx]: 
+                samples.append((x, y))
+    #print("samples: ", samples)
+
+    return samples
+
+
+def samples_only(sample_size, img_size, pixels_filled):
+    """Only get samples within the sample space."""
+    samples = []
+
+    x_min, x_max = -2, 1
+    y_min, y_max = -1.5, 1.5
+
+    dx = (x_max - x_min) / img_size
+    dy = (y_max - y_min) / img_size
+
+
     # Collect samples within rejection space.
     valid_pixels = np.argwhere(pixels_filled)
     valid_centers = []
@@ -52,7 +83,6 @@ def rejection(img_size, i_space, Z_boundary, sample_size):
     for i, j in valid_pixels:
         valid_centers.append((x_min + (j + 0.5)*dx, y_min + (i + 0.5) *dy))
 
-    samples = []
 
     while len(samples) < sample_size:
         center_x, center_y = valid_centers[np.random.choice(len(valid_centers))]
@@ -62,8 +92,7 @@ def rejection(img_size, i_space, Z_boundary, sample_size):
         y = np.random.uniform(center_y - dy / 2, center_y + dy / 2)
         
         samples.append((x, y))
-
-    return area, pixels_filled, samples
+    return samples
 
 
 def rejection_sample_space(samples, area_filled, i_space, Z_boundary):
@@ -79,6 +108,7 @@ def rejection_sample_space(samples, area_filled, i_space, Z_boundary):
     plt.gca().set_aspect('equal')
     plt.legend()
     plt.show()
+
 
 '''
 img_size = 100
