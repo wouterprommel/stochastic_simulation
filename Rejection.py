@@ -2,8 +2,6 @@ import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import binary_fill_holes
-import time
-import pandas as pd
 
 
 def rejection(img_size, i_space, Z_boundary, sample_size):
