@@ -94,7 +94,7 @@ def plot_comparison(sample_sizes, max_iter):
     ax.axhline(y=lit_area, color=colors[3], linestyle='--', label="Literature Area")
 
     # Zoomed inset setup focused on the last data points
-    axins = zoomed_inset_axes(ax, zoom=3, loc=2)  
+    axins = zoomed_inset_axes(ax, zoom=6, loc=4)  
     axins.errorbar(sample_sizes, uniform_areas, yerr=uniform_errors, color=colors[0], marker='o', linestyle='-', capsize=5)
     axins.errorbar(sample_sizes, hypercube_areas, yerr=hypercube_errors, color=colors[1], marker='s', linestyle='-', capsize=5)
     axins.errorbar(sample_sizes, ortho_areas, yerr=ortho_errors, color=colors[2], marker='^', linestyle='-', capsize=5)
@@ -102,9 +102,9 @@ def plot_comparison(sample_sizes, max_iter):
     axins.axhline(y=lit_area, color=colors[3], linestyle='--')
 
     # Set the limits for the zoomed inset to focus on the maximum sample sizes
-    last_points = masking_areas[-4:] + ortho_areas[-1:]
-    x1, x2 = sample_sizes[-4]*0.9, sample_sizes[-1] * 1.1  # focus on the last few sample points, adding a bit of space
-    y1, y2 = min(last_points) - 0.08, max(last_points) + 0.08
+    last_points = masking_areas[-4:] + ortho_areas[-2:]
+    x1, x2 = sample_sizes[-4]*0.95, sample_sizes[-2] * 1.05  # focus on the last few sample points, adding a bit of space
+    y1, y2 = min(last_points) - 0.04, max(last_points) + 0.04
     axins.set_xlim(x1, x2)
     axins.set_ylim(y1, y2)
 
@@ -114,10 +114,11 @@ def plot_comparison(sample_sizes, max_iter):
 
     # Draw connecting lines between inset and main plot
     mark_inset(ax, axins, loc1=1, loc2=4, fc="none", ec="0.5")
-
-    ax.set_xlabel('Number of Samples', fontsize=24)
-    ax.set_ylabel('Estimated Area', fontsize=24)
-    ax.set_title(f'Performance sampling methods ({max_iter} iterations)', fontsize=26)
+    ax.tick_params(axis='x', labelsize=18)  # Set x-axis tick label font size
+    ax.tick_params(axis='y', labelsize=18)
+    ax.set_xlabel('Number of Samples', fontsize=28)
+    ax.set_ylabel('Estimated Area', fontsize=28)
+    ax.set_title(f'Performance sampling methods ({max_iter} iterations)', fontsize=30)
     ax.legend(fontsize=18)
     ax.set_xscale('log')
     ax.grid(True)
