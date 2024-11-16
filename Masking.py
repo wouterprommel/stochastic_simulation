@@ -5,7 +5,7 @@ from scipy.ndimage import binary_fill_holes
 
 
 def masking(img_size, i_space, Z_boundary, sample_size):
-    """ Takes samples based on an defined area within which to accept samples."""
+    """ Takes samples orthogonally based on an defined area within which to accept samples."""
     x_min, x_max = -2, 1
     y_min, y_max = -1.5, 1.5
     x_axis = np.linspace(x_min, x_max, img_size)
@@ -29,8 +29,7 @@ def masking(img_size, i_space, Z_boundary, sample_size):
     pixel_area = abs(dx * dy)
     area = pixel_nr * pixel_area
 
-
-     # Set valid pixels and number of grids
+    # Set valid pixels and number of grids
     valid_pixels = np.argwhere(pixels_filled)
     num_valid_pixels = len(valid_pixels)
     samples_per_pixel = sample_size // num_valid_pixels
@@ -50,8 +49,8 @@ def masking(img_size, i_space, Z_boundary, sample_size):
 
         x_edges = np.linspace(x_bound, x_bound + dx, subgrid_size + 1)
         y_edges = np.linspace(y_bound, y_bound + dy, subgrid_size + 1)
-        
         subgrid_size = int(np.sqrt(samples_per_pixel))
+
         if subgrid_size * subgrid_size < samples_per_pixel:
             subgrid_size += 1
 
@@ -80,7 +79,6 @@ def masking(img_size, i_space, Z_boundary, sample_size):
 
 def masking_sample_space(samples, area_filled, i_space, Z_boundary):
     """Makes a plot of the masking sample space area and samples."""
-
     sample_x, sample_y = zip(*samples)
 
     plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.25)

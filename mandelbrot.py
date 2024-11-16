@@ -93,6 +93,7 @@ def pixel_count_area(img_size = 1000):
     plt.ylabel('Imaginary Part')
     plt.show()
 
+
 def timeing():
     '''
     Time to sample N amount of points for different sampling methods
@@ -130,7 +131,6 @@ def plot_samples():
 
 
 if __name__ == "__main__":
-
     #plot_samples()
     #pixel_count_area()
     timeing()
