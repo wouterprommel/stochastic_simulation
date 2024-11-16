@@ -82,15 +82,20 @@ def pixel_count_area(img_size = 1000):
     A = S/(img_size*img_size) * 3*3
     print(f"Area from pixel count: {A=}")
 
-    plt.imshow(image)
-    plt.show()
+    #plt.imshow(image)
+    #plt.show()
 
     # To generate inferno map
+    plt.figure(figsize=(12, 8))
     plt.imshow(mandelbrot_set, extent=(-2, 1, -1.5, 1.5), cmap='inferno')
-    plt.colorbar()
-    plt.title('Mandelbrot Fractal')
-    plt.xlabel('Real Part')
-    plt.ylabel('Imaginary Part')
+    colorbar = plt.colorbar()
+    colorbar.ax.tick_params(labelsize=18)
+    plt.title('Mandelbrot Fractal', fontsize=30)
+    plt.xlabel('Real Part', fontsize=28)
+    plt.ylabel('Imaginary Part', fontsize=28)
+    plt.tick_params(axis='x', labelsize=18)
+    plt.tick_params(axis='y', labelsize=18)
+    plt.savefig(f'Figures/Mandelbrot.pdf', format='pdf')
     plt.show()
 
 
@@ -132,7 +137,7 @@ def plot_samples():
 
 if __name__ == "__main__":
     #plot_samples()
-    #pixel_count_area()
+    pixel_count_area()
     timeing()
 
     # single value itteration
