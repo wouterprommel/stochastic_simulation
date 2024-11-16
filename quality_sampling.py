@@ -48,9 +48,9 @@ def plot_comparison(sample_sizes, max_iter):
     axins.errorbar(sample_sizes, masking_areas, yerr=masking_errors, color=colors[4], marker='x', linestyle='-', capsize=5)
     axins.axhline(y=lit_area, color=colors[3], linestyle='--')
 
-    # Define the limits for the zoomed inset 
+    # Define the limits for the zoomed inset (last few sample sizes)
     last_points = masking_areas[-4:] + ortho_areas[-1:]
-    x1, x2 = sample_sizes[-4]*0.98, sample_sizes[-1] * 1.02  # focus on the last few sample points, adding a bit of space
+    x1, x2 = sample_sizes[-4]*0.98, sample_sizes[-1] * 1.02  
     y1, y2 = min(last_points) - 0.03, max(last_points) + 0.03
     axins.set_xlim(x1, x2)
     axins.set_ylim(y1, y2)
@@ -62,7 +62,7 @@ def plot_comparison(sample_sizes, max_iter):
     # Draw connecting lines between inset and main plot
     mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec="0.5", lw=0.5)  # top-right to bottom-left
     mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5", lw=0.5)
-    ax.tick_params(axis='x', labelsize=18)  # Set x-axis tick label font size
+    ax.tick_params(axis='x', labelsize=18)  # Set x-axis values font size
     ax.tick_params(axis='y', labelsize=18)
     ax.set_xlabel('Number of Samples', fontsize=28)
     ax.set_ylabel('Estimated Area', fontsize=28)
@@ -70,28 +70,9 @@ def plot_comparison(sample_sizes, max_iter):
     ax.legend(fontsize=18)
     ax.set_xscale('log')
     ax.grid(True)
-    #plt.tight_layout()
     plt.savefig(f'Figures/Estimated_Area_vs_Number_of_Samples_{max_iter}_iterations.pdf', format='pdf')
     plt.show()
 
     return uniform_areas, uniform_errors, hypercube_areas, ortho_areas, ortho_errors
 
 plot_comparison(sample_sizes, 200)
-
-def error_evaluation(area, lit_area):
-    mean_area = np.mean(area)
-    std_area = np.std(area, ddof=1)
-    print(f"""The mean of the estimated areas is {mean_area}""")	
-    abs_error = np.abs(mean_area - lit_area) # just an estimate of the average absolute error
-    rel_error = abs_error / lit_area * 100 # in percentage
-   # print(f"""The absolute error is {abs_error}""")
-   # print(f"""The relative error is {rel_error}""")
-    return abs_error, rel_error, mean_area, std_area
-print("Uniform sampling:")
-#error_evaluation(uniform_areas, lit_area)
-print("Hypercube sampling:")
-#error_evaluation(hypercube_areas, lit_area)
-print("Orthogonal sampling:")
-#error_evaluation(ortho_areas, lit_area)
-
-# 1 plot log en 1 zonder log 
