@@ -81,6 +81,7 @@ def pixel_count_area(img_size = 1000):
     S = np.sum(image[:, :, 0] == 1)
     A = S/(img_size*img_size) * 3*3
     print(f"Area from pixel count: {A=}")
+    print(f"The relative error compared to the literature value is: {np.abs(A - 1.5052)/1.5052*100}%.")
 
     #plt.imshow(image)
     #plt.show()
