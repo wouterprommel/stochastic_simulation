@@ -115,9 +115,9 @@ def plot_comparison(sample_sizes, max_iter):
     # Draw connecting lines between inset and main plot
     mark_inset(ax, axins, loc1=1, loc2=4, fc="none", ec="0.5")
 
-    ax.set_xlabel('Number of Samples', fontsize=20)
-    ax.set_ylabel('Estimated Area', fontsize=20)
-    ax.set_title(f'Estimated Area vs Number of Samples for {max_iter} iterations', fontsize=22)
+    ax.set_xlabel('Number of Samples', fontsize=24)
+    ax.set_ylabel('Estimated Area', fontsize=24)
+    ax.set_title(f'Performance sampling methods ({max_iter} iterations)', fontsize=26)
     ax.legend(fontsize=18)
     ax.set_xscale('log')
     ax.grid(True)
