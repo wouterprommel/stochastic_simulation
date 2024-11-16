@@ -60,7 +60,7 @@ def plot_comparison(sample_sizes, max_iter):
     axins.set_yticks([])
 
     # Draw connecting lines between inset and main plot
-    mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec="0.5", lw=0.5)  # top-right to bottom-left
+    mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec="0.5", lw=0.5) 
     mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5", lw=0.5)
     ax.tick_params(axis='x', labelsize=18)  # Set x-axis values font size
     ax.tick_params(axis='y', labelsize=18)
