@@ -78,16 +78,23 @@ def gen_std(N, i, Set_std=0.0015):
 
     return np.mean(np.array(list)), np.sqrt(S2), n
 
-deviation1, std1 = convergence(1e7, 120)
-deviation2, std2 = convergence(1e8, 120)
-plt.plot(deviation1, label='1e7')
-plt.plot(std1, label='1e7')
-plt.plot(deviation2, label='1e8')
-plt.plot(std2, label='1e8')
+plt.figure(figsize=(12, 8))
+colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
+deviation1, std1 = convergence(1e7, 200)
+deviation2, std2 = convergence(1e8, 200)
+plt.plot(deviation1, label='$A_{j,s} - A_{i,s}$ ($10^{7}$ samples)', color=colors[0], linestyle='-', alpha = 0.6)
+plt.plot(std1, label='$\sigma_{A_{i,s}}$ ($10^{7}$ samples)', color=colors[0], linestyle='--')
+plt.plot(deviation2, label='$A_{j,s} - A_{i,s}$ ($10^{8}$ samples)', color=colors[2], linestyle='-', alpha = 0.6)
+plt.plot(std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ samples)', color=colors[2], linestyle='--')
 #plt.yscale('log')
-plt.legend()
-plt.xlabel('iterations')
-plt.ylabel('$A_{j,s} - A_{i,s}$')
+plt.tick_params(axis='x', labelsize=20)
+plt.tick_params(axis='y', labelsize=20)
+plt.legend(fontsize=20)
+plt.title('Convergence of the area estimate', fontsize=30)
+plt.xlabel('Iterations', fontsize=28)
+plt.ylabel('$A_{j,s} - A_{i,s}$', fontsize=28)
+plt.grid()
+plt.savefig(f'Figures/Convergence of area estimate.pdf', format='pdf')
 plt.show()
 
 # X, S, n = gen_std(10000, 80)
