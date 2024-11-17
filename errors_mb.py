@@ -1,26 +1,44 @@
 import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
+import Sample_methods
 
 #plt.rcParams['text.usetex'] = True
 
-def convergence(N, i):
+def eval_point_mandelbrot(x, y, i):
+    max_iteration = i
+    c = complex(x, y)
+    z = 0
+    iter = 0
+    bounded = True
+    itterating = True
+    while bounded and itterating:
+        bounded = abs(z) <= 2
+        itterating = iter < max_iteration
+        z = z*z + c
+        iter += 1
+    return (iter-1)/max_iteration # set red color (0-1)
+
+def convergence(i, method='uniform', std=0.05):
     '''
     Compute |A_js - A_is| for all j < i
     return: list
     '''
     A_list =[]
     std_list = []
-    A_iN, std = mandelbrot.mc_area(N, i, std=True)
-    for j in range(10, i):
-        if j % i//2 == 0: print('half')
+    #A_iN, std = mandelbrot.mc_area(N, i, std=True)
+    A_is, std, n = gen_std_2(i, std, method=method)
+    for j in range(10, i, 5):
+        print('depth: ', j)
 
-        A_jN, std = mandelbrot.mc_area(N, j, std=True)
+        #A_jN, std = mandelbrot.mc_area(N, j, std=True, method=method)
+        Ajs, std, n = gen_std_2(j, std, method=method)
+        A_list.append(Ajs)
         std_list.append(std)
-        A_list.append(A_jN)
+        print(n)
 
     A_j_list = np.array(A_list)
-    deviation = np.abs(A_j_list - A_iN)
+    deviation = np.abs(A_j_list - A_is)
     return deviation, std_list
 
 
@@ -57,6 +75,44 @@ def sample_var_from_list(list):
     sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) - 1)
     return sample_var
 
+def gen_std_2(i, std, method='uniform'):
+    area_total = 9
+    if method == 'uniform':
+        N = int(1e8)
+        n = int(np.sqrt(N))
+        X = -1.5 + 3*np.random.rand(n)
+        Y = -2 + 3*np.random.rand(n)
+        samples = zip(X, Y)
+
+    elif method == 'hypercube':
+        N = int(1e6)
+        samples = Sample_methods.hypercube(N)
+
+    elif method == 'orthogonal':
+        N = int(400*400)
+        samples = Sample_methods.orthogonal(N)
+    else:
+        print('error')
+        quit()
+
+    samples = list(samples)
+
+    evaluations = []
+
+    std_value = 1
+    n_samples = len(evaluations)
+    while std_value > std and n_samples < N:
+        for x, y in samples[n_samples:(n_samples + 1000)]:
+            eval = eval_point_mandelbrot(x, y, i) == 1
+            evaluations.append(eval)
+        area = area_total * np.mean(evaluations) 
+        std_value = area_total * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
+        #print(f'# samples: {len(evaluations)}, Area: {area}, Std: {std_value}')
+        n_samples = len(evaluations)
+    return area, std, n_samples
+
+
+
 def gen_std(N, i, Set_std=0.0015):
     '''
     input A_iN (Xi), wanted std
@@ -78,15 +134,20 @@ def gen_std(N, i, Set_std=0.0015):
 
     return np.mean(np.array(list)), np.sqrt(S2), n
 
+std = 0.1
+
 plt.figure(figsize=(12, 8))
 colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
-deviation1, std1 = convergence(1e7, 200)
-deviation2, std2 = convergence(1e8, 200)
-plt.plot(deviation1, label='$A_{j,s} - A_{i,s}$ ($10^{7}$ samples)', color=colors[0], linestyle='-', alpha = 0.6)
-plt.plot(std1, label='$\sigma_{A_{i,s}}$ ($10^{7}$ samples)', color=colors[0], linestyle='--')
-plt.plot(deviation2, label='$A_{j,s} - A_{i,s}$ ($10^{8}$ samples)', color=colors[2], linestyle='-', alpha = 0.6)
-plt.plot(std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ samples)', color=colors[2], linestyle='--')
+depth = 200
+deviation1, std1 = convergence(depth, method='orthogonal', std=std)
+deviation2, std2 = convergence(depth, std=std)
+
+plt.plot(list(range(10, depth, 5)), deviation1, label='$A_{j,s} - A_{i,s}$ ($10^{4}$ orthogonal samples)', color=colors[0], linestyle='-', alpha = 0.6)
+plt.plot(list(range(10, depth, 5)), std1, label='$\sigma_{A_{i,s}}$ ($10^{4}$ orthogonal samples)', color=colors[0], linestyle='--')
+plt.plot(list(range(10, depth, 5)), deviation2, label='$A_{j,s} - A_{i,s}$ ($10^{8}$ unifrom samples)', color=colors[2], linestyle='-', alpha = 0.6)
+plt.plot(list(range(10, depth, 5)), std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ uniform samples)', color=colors[2], linestyle='--')
 #plt.yscale('log')
+
 plt.tick_params(axis='x', labelsize=20)
 plt.tick_params(axis='y', labelsize=20)
 plt.legend(fontsize=20)
@@ -94,7 +155,7 @@ plt.title('Convergence of the area estimate', fontsize=30)
 plt.xlabel('Iterations', fontsize=28)
 plt.ylabel('$A_{j,s} - A_{i,s}$', fontsize=28)
 plt.grid()
-plt.savefig(f'Figures/Convergence of area estimate.pdf', format='pdf')
+#plt.savefig(f'Figures/Convergence of area estimate.pdf', format='pdf')
 plt.show()
 
 # X, S, n = gen_std(10000, 80)
