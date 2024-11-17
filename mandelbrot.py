@@ -23,13 +23,13 @@ def eval_point_mandelbrot(x, y, i):
 def mc_area(N, i, method='uniform', std=False):
     # y from -1.5 to 1.5
     # x form -2 to 1
-    n = int(np.sqrt(N))
     area_total = 9
+    N = int(N)
 
     if method == 'uniform':
-        X = -1.5 + 3*np.random.rand(n)
-        Y = -2 + 3*np.random.rand(n)
-        samples = zip(X, Y)
+        X = -1.5 + 3*np.random.rand(N)
+        Y = -2 + 3*np.random.rand(N)
+        samples = list(zip(X, Y))
 
     elif method == 'hypercube':
         samples = Sample_methods.hypercube(N)
