@@ -2,6 +2,7 @@ import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
 import Sample_methods
+import time
 
 #plt.rcParams['text.usetex'] = True
 
@@ -32,7 +33,7 @@ def convergence(i, method='uniform', std=0.05):
         print('depth: ', j)
 
         #A_jN, std = mandelbrot.mc_area(N, j, std=True, method=method)
-        Ajs, std, n = gen_std_2(j, std, method=method)
+        Ajs, std, n = gen_std_2(samples, j)
         A_list.append(Ajs)
         std_list.append(std)
         print(n)
@@ -40,6 +41,68 @@ def convergence(i, method='uniform', std=0.05):
     A_j_list = np.array(A_list)
     deviation = np.abs(A_j_list - A_is)
     return deviation, std_list
+def timeit():
+    print(np.round(time.time() - t, 3), 'sec elapsed for random mb')
+
+def convergence2(N, i, method='uniform'):
+    t = time.time()
+    N = int(N)
+
+    if method == 'uniform':
+        X = -1.5 + 3*np.random.rand(N)
+        Y = -2 + 3*np.random.rand(N)
+        samples = list(zip(X, Y))
+
+    elif method == 'hypercube':
+        samples = Sample_methods.hypercube(N)
+
+    elif method == 'orthogonal':
+        samples = Sample_methods.orthogonal(N)
+
+    elif method == 'masking':
+        img_size = 25
+        i_space = 8
+        Z_boundary = 1
+        area_total, _, samples = Masking.masking(img_size, i_space, Z_boundary, N)
+        N = len(samples)
+    else:
+        print('error no method')
+        quit()
+
+    samples = np.array(samples)
+    print(len(samples))
+    print(np.round(time.time() - t, 3), 'sec elapsed for sampling')
+    t = time.time()
+
+    A_list =[]
+    std_list = []
+    A_is, std = mc_samples(samples, i) 
+    print(np.round(time.time() - t, 3), 'sec elapsed for A_is')
+    t = time.time()
+    for j in range(10, i, 10):
+        print('depth: ', j)
+
+        Ajs, std = mc_samples(samples, j)
+        A_list.append(Ajs)
+        std_list.append(std)
+        print(np.round(time.time() - t, 3), 'sec elapsed for A_js')
+        t = time.time()
+
+    A_j_list = np.array(A_list)
+    deviation = np.abs(A_j_list - A_is)
+    return deviation, std_list
+
+def mc_samples(samples, i):
+    area_total = 9
+    evaluations = []
+    for x, y in samples:
+        eval = eval_point_mandelbrot(x, y, i) == 1
+        evaluations.append(eval)
+
+    area = area_total * sum(evaluations) / len(evaluations)
+    #print(f"Area from MC: {area=}")
+    std_value = area_total * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
+    return area, std_value
 
 
 def std_mandelbrot(N, i, M=10):
@@ -138,14 +201,19 @@ std = 0.1
 
 plt.figure(figsize=(12, 8))
 colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
-depth = 200
-deviation1, std1 = convergence(depth, method='orthogonal', std=std)
-deviation2, std2 = convergence(depth, std=std)
+depth = 250
+deviation2, std2 = convergence2(1e6, depth)
+deviation1, std1 = convergence2(1e6, depth, method='orthogonal')
+deviation3, std3 = convergence2(1e6, depth, method='hypercube')
 
-plt.plot(list(range(10, depth, 5)), deviation1, label='$A_{j,s} - A_{i,s}$ ($10^{4}$ orthogonal samples)', color=colors[0], linestyle='-', alpha = 0.6)
-plt.plot(list(range(10, depth, 5)), std1, label='$\sigma_{A_{i,s}}$ ($10^{4}$ orthogonal samples)', color=colors[0], linestyle='--')
-plt.plot(list(range(10, depth, 5)), deviation2, label='$A_{j,s} - A_{i,s}$ ($10^{8}$ unifrom samples)', color=colors[2], linestyle='-', alpha = 0.6)
-plt.plot(list(range(10, depth, 5)), std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ uniform samples)', color=colors[2], linestyle='--')
+plt.plot(list(range(10, depth, 10)), deviation1, label='$A_{j,s} - A_{i,s}$ ($10^{4}$ orthogonal samples)', color=colors[0], linestyle='-', alpha = 0.6)
+plt.plot(list(range(10, depth, 10)), std1, label='$\sigma_{A_{i,s}}$ ($10^{4}$ orthogonal samples)', color=colors[0], linestyle='--')
+
+plt.plot(list(range(10, depth, 10)), deviation2, label='$A_{j,s} - A_{i,s}$ ($10^{6}$ unifrom samples)', color=colors[2], linestyle='-', alpha = 0.6)
+plt.plot(list(range(10, depth, 10)), std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ uniform samples)', color=colors[2], linestyle='--')
+
+plt.plot(list(range(10, depth, 10)), deviation2, label='$A_{j,s} - A_{i,s}$ ($10^{8}$ hypercube samples)', color=colors[2], linestyle='-', alpha = 0.6)
+plt.plot(list(range(10, depth, 10)), std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ hypercube samples)', color=colors[2], linestyle='--')
 #plt.yscale('log')
 
 plt.tick_params(axis='x', labelsize=20)
