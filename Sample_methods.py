@@ -44,18 +44,15 @@ def orthogonal(N):
     x_axis = np.linspace(-2, 1, edges)
     y_axis = np.linspace(-1.5, 1.5, edges)
 
-    # Define the interval indices of the subgrids
-    x_indices = np.arange(k)
-    y_indices = np.arange(k)
-
-    np.random.shuffle(x_indices)
-    np.random.shuffle(y_indices)
-
     x_samples = []
     y_samples = []
 
+    # Create all index cominations and make sure they are in random order
+    squares = [(xi, yi) for xi in range(k) for yi in range(k)]
+    np.random.shuffle(squares)
+
     # Sampling ==> choose random point in each square and store them in samples
-    for xi, yi in zip(x_indices, y_indices):
+    for xi, yi in squares:
         x = np.random.uniform(x_axis[xi], x_axis[xi+1])
         y = np.random.uniform(y_axis[yi], y_axis[yi+1])
 

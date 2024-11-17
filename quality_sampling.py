@@ -49,8 +49,8 @@ def plot_comparison(sample_sizes, max_iter):
     axins.axhline(y=lit_area, color=colors[3], linestyle='--')
 
     # Define the limits for the zoomed inset (last few sample sizes)
-    last_points = masking_areas[-4:] + ortho_areas[-1:]
-    x1, x2 = sample_sizes[-4]*0.98, sample_sizes[-1] * 1.02  
+    last_points = masking_areas[-5:] + ortho_areas[-1:]
+    x1, x2 = sample_sizes[-5]*0.98, sample_sizes[-1] * 1.02  
     y1, y2 = min(last_points) - 0.03, max(last_points) + 0.03
     axins.set_xlim(x1, x2)
     axins.set_ylim(y1, y2)
@@ -62,12 +62,12 @@ def plot_comparison(sample_sizes, max_iter):
     # Draw connecting lines between inset and main plot
     mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec="0.5", lw=0.5) 
     mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5", lw=0.5)
-    ax.tick_params(axis='x', labelsize=18)  # Set x-axis values font size
-    ax.tick_params(axis='y', labelsize=18)
-    ax.set_xlabel('Number of Samples', fontsize=28)
-    ax.set_ylabel('Estimated Area', fontsize=28)
-    ax.set_title(f'Performance sampling methods ({max_iter} iterations)', fontsize=30)
-    ax.legend(fontsize=18)
+    ax.tick_params(axis='x', labelsize=19)  # Set x-axis values font size
+    ax.tick_params(axis='y', labelsize=19)
+    ax.set_xlabel('Number of Samples', fontsize=30)
+    ax.set_ylabel('Estimated Area', fontsize=30)
+    ax.set_title(f'Performance sampling methods ({max_iter} iterations)', fontsize=32)
+    ax.legend(fontsize=19)
     ax.set_xscale('log')
     ax.grid(True)
     plt.savefig(f'Figures/Estimated_Area_vs_Number_of_Samples_{max_iter}_iterations.pdf', format='pdf')
