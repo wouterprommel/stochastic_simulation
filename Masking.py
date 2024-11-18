@@ -77,7 +77,9 @@ def adaptive(img_size, i_space, Z_boundary, sample_size):
 def adaptive_sample_space(samples, area_filled, i_space, Z_boundary):
     """Makes a plot of the adaptive grid sample space area and samples."""
     sample_x, sample_y = zip(*samples)
-
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='serif')
+    
     plt.figure(figsize=(12, 8))
     plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.25)
     plt.tick_params(axis='x', labelsize=20)
