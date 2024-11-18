@@ -80,6 +80,6 @@ def plot_comparison(sample_sizes, max_iter):
     plt.savefig(f'Figures/Estimated_Area_vs_Number_of_Samples_{max_iter}_iterations.pdf', bbox_inches='tight', format='pdf')
     plt.show()
 
-    return uniform_areas, uniform_errors, hypercube_areas, ortho_areas, ortho_errors
+    return uniform_areas, uniform_errors, hypercube_areas, hypercube_errors, ortho_areas, ortho_errors, masking_areas, masking_errors
 
 plot_comparison(sample_sizes, 150)
