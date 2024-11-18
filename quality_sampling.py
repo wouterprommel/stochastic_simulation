@@ -34,18 +34,18 @@ def plot_comparison(sample_sizes, max_iter):
     fig, ax = plt.subplots(figsize=(12, 8))
 
     colors = ['tab:blue', 'tab:green', 'tab:red', "tab:purple", "tab:orange"]
-    ax.errorbar(sample_sizes, uniform_areas, yerr=uniform_errors, label='Uniform sampling', color=colors[0], marker='o', linestyle='-', capsize=5)
-    ax.errorbar(sample_sizes, hypercube_areas, yerr=hypercube_errors, label='Hypercube sampling', color=colors[1], marker='s', linestyle='-', capsize=5)
-    ax.errorbar(sample_sizes, ortho_areas, yerr=ortho_errors, label='Orthogonal sampling', color=colors[2], marker='^', linestyle='-', capsize=5)
-    ax.errorbar(sample_sizes, masking_areas, yerr=masking_errors, label='Masking sampling', color=colors[4], marker='x', linestyle='-', capsize=5)
+    ax.errorbar(sample_sizes, uniform_areas, yerr=uniform_errors, label='Uniform sampling', color=colors[0], marker='o', linestyle='-', capsize=3, linewidth=0.9)
+    ax.errorbar(sample_sizes, hypercube_areas, yerr=hypercube_errors, label='Hypercube sampling', color=colors[1], marker='s', linestyle='-', capsize=3, linewidth=0.9)
+    ax.errorbar(sample_sizes, ortho_areas, yerr=ortho_errors, label='Orthogonal sampling', color=colors[2], marker='^', linestyle='-', capsize=3, linewidth=0.9)
+    ax.errorbar(sample_sizes, masking_areas, yerr=masking_errors, label='Masking sampling', color=colors[4], marker='x', linestyle='-', capsize=3, linewidth=0.9)
     ax.axhline(y=lit_area, color=colors[3], linestyle='--', label="$A_{M} = 1.5052$")
 
     # Zoomed figure for the last few sample sizes
     axins = zoomed_inset_axes(ax, zoom=8, loc=4)  
-    axins.errorbar(sample_sizes, uniform_areas, yerr=uniform_errors, color=colors[0], marker='o', linestyle='-', capsize=5)
-    axins.errorbar(sample_sizes, hypercube_areas, yerr=hypercube_errors, color=colors[1], marker='s', linestyle='-', capsize=5)
-    axins.errorbar(sample_sizes, ortho_areas, yerr=ortho_errors, color=colors[2], marker='^', linestyle='-', capsize=5)
-    axins.errorbar(sample_sizes, masking_areas, yerr=masking_errors, color=colors[4], marker='x', linestyle='-', capsize=5)
+    axins.errorbar(sample_sizes, uniform_areas, yerr=uniform_errors, color=colors[0], marker='o', linestyle='-', capsize=3, linewidth=0.9)
+    axins.errorbar(sample_sizes, hypercube_areas, yerr=hypercube_errors, color=colors[1], marker='s', linestyle='-', capsize=3, linewidth=0.9)
+    axins.errorbar(sample_sizes, ortho_areas, yerr=ortho_errors, color=colors[2], marker='^', linestyle='-', capsize=3, linewidth=0.9)
+    axins.errorbar(sample_sizes, masking_areas, yerr=masking_errors, color=colors[4], marker='x', linestyle='-', capsize=3, linewidth=0.9)
     axins.axhline(y=lit_area, color=colors[3], linestyle='--')
 
     # Define the limits for the zoomed inset (last few sample sizes)
@@ -67,8 +67,8 @@ def plot_comparison(sample_sizes, max_iter):
     ax.set_ylim(0, 3)
     ax.set_xlabel('Number of Samples', fontsize=30)
     ax.set_ylabel('Estimated Area', fontsize=30)
-#    ax.set_title(f'Performance sampling methods ({max_iter} iterations)', fontsize=32)
-    ax.legend(fontsize=20)
+#    ax.set_title(f'Performance sampling methods \n({max_iter} iterations)', fontsize=32)
+    ax.legend(fontsize=20, loc= 'upper right')
     ax.set_xscale('log')
     ax.grid(True)
     plt.savefig(f'Figures/Estimated_Area_vs_Number_of_Samples_{max_iter}_iterations.pdf', format='pdf')

@@ -34,6 +34,12 @@ def masking(img_size, i_space, Z_boundary, sample_size):
     num_valid_pixels = len(valid_pixels)
     samples_per_pixel = sample_size // num_valid_pixels
 
+    subgrid_size = int(np.sqrt(samples_per_pixel))
+    # Make sure the subgrids can hold enough samples, make larger if neccesary
+    # Samples per pixel can be different due to number of grids and devision.
+    if subgrid_size * subgrid_size < samples_per_pixel:
+        subgrid_size += 1
+
     x_samples = []
     y_samples = []
 
@@ -41,18 +47,8 @@ def masking(img_size, i_space, Z_boundary, sample_size):
         x_bound = x_min + j * dx
         y_bound = y_min + i * dy
 
-        # Make sure the subgrids can hold enough samples, make larger if neccesary
-        # Samples per pixel can be different due to number of grids and devision.
-        subgrid_size = int(np.sqrt(samples_per_pixel))
-        if subgrid_size * subgrid_size < samples_per_pixel:
-            subgrid_size += 1
-
         x_edges = np.linspace(x_bound, x_bound + dx, subgrid_size + 1)
         y_edges = np.linspace(y_bound, y_bound + dy, subgrid_size + 1)
-        subgrid_size = int(np.sqrt(samples_per_pixel))
-
-        if subgrid_size * subgrid_size < samples_per_pixel:
-            subgrid_size += 1
 
         indices = np.arange(subgrid_size)
 
