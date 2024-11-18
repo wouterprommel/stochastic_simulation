@@ -37,11 +37,11 @@ def mc_area(N, i, method='uniform', std=False):
     elif method == 'orthogonal':
         samples = Sample_methods.orthogonal(N)
 
-    elif method == 'masking':
+    elif method == 'adaptive':
         img_size = 25
         i_space = 8
         Z_boundary = 1
-        area_total, _, samples = Masking.masking(img_size, i_space, Z_boundary, N)
+        area_total, _, samples = Masking.adaptive(img_size, i_space, Z_boundary, N)
         N = len(samples)
 
     evaluations = []
@@ -119,8 +119,8 @@ def timeing():
     print (np.round(time.time() - t, 3), 'sec elapsed for orthogonal mb')
 
     t = time.time()
-    print(mc_area(N, 80, 'masking'))
-    print (np.round(time.time() - t, 3), 'sec elapsed for masking orthogonal mb')
+    print(mc_area(N, 80, 'adaptive'))
+    print (np.round(time.time() - t, 3), 'sec elapsed for adaptive orthogonal mb')
 
 
 def plot_samples():

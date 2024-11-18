@@ -4,7 +4,7 @@ import numpy as np
 from scipy.ndimage import binary_fill_holes
 
 
-def masking(img_size, i_space, Z_boundary, sample_size):
+def adaptive(img_size, i_space, Z_boundary, sample_size):
     """ Takes samples orthogonally based on an defined area within which to accept samples."""
     x_min, x_max = -2, 1
     y_min, y_max = -1.5, 1.5
@@ -19,8 +19,7 @@ def masking(img_size, i_space, Z_boundary, sample_size):
             Z[i, j] = mandelbrot.eval_point_mandelbrot(x, y, i_space)
 
     pixels = Z >= Z_boundary
-    pixels_filled = binary_fill_holes(pixels)
-    #masking_sample_space(pixels_filled, i)
+    pixels_filled = pixels
 
     # Compute the area occupied by pixels/boxes.
     pixel_nr = np.sum(pixels_filled)
@@ -70,18 +69,23 @@ def masking(img_size, i_space, Z_boundary, sample_size):
     # sample size may differ, so change in mb
     samples = list(zip(x_samples, y_samples))
 
+    adaptive_sample_space(samples, pixels_filled, i_space, Z_boundary)
+
     return area, pixels_filled, samples
 
 
-def masking_sample_space(samples, area_filled, i_space, Z_boundary):
-    """Makes a plot of the masking sample space area and samples."""
+def adaptive_sample_space(samples, area_filled, i_space, Z_boundary):
+    """Makes a plot of the adaptive grid sample space area and samples."""
     sample_x, sample_y = zip(*samples)
 
+    plt.figure(figsize=(12, 8))
     plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.25)
-    plt.scatter(sample_x, sample_y, color='red', s=5, label="Samples")
-    plt.xlabel('Real Part')
-    plt.ylabel('Imaginary Part')
-    plt.title(f'Sampled Points with Max Iterations = {i_space} and Z boundary = {Z_boundary}')
-    plt.gca().set_aspect('equal')
-    plt.legend()
+    plt.tick_params(axis='x', labelsize=20)
+    plt.tick_params(axis='y', labelsize=20)
+    plt.xlabel('Real Part', fontsize=28)
+    plt.ylabel('Imaginary Part', fontsize=28)
+    plt.title(f'Sampled Points with Max Iterations = {i_space} and Z boundary = {Z_boundary}', fontsize=30)
+    plt.gca().set_aspect('equal')   
+    plt.grid()
+    plt.savefig(f'Adaptive Sample Space.pdf', format='pdf')
     plt.show()
