@@ -21,7 +21,7 @@ from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
 
 import mandelbrot
 
-sample_sizes = [10**2, 20**2, 30**2, 40**2, 50**2, 60**2, 70**2, 80**2, 90**2,
+sample_sizes = [10**2, 20**2, 30**2, 40**2, 50**2, 60**2, 70**2, 80**2, 90**2, 
                 100**2, 200**2, 300**2, 400**2, 500**2, 600**2, 700**2, 800**2,
                 900**2, 1000**2]
 
@@ -84,19 +84,19 @@ def plot_comparison(sizes, max_iter):
     fig, ax = plt.subplots(figsize=(5.91, 3.6))
     ax.errorbar(sizes, uniform_areas, yerr=uniform_errors, 
                 label='Uniform sampling', color=colors[0], marker='s',
-                linestyle='-', CAPsize=CAP, markersize=MARKER_SIZE,
+                linestyle='-', capsize=CAP, markersize=MARKER_SIZE,
                 linewidth=LW, alpha=ALPHA)
     ax.errorbar(sizes, hypercube_areas, yerr=hypercube_errors,
                 label='Hypercube sampling', color=colors[1], marker='o',
-                linestyle='-', CAPsize=CAP, markersize=MARKER_SIZE,
+                linestyle='-', capsize=CAP, markersize=MARKER_SIZE,
                 linewidth=LW, alpha=ALPHA)
     ax.errorbar(sizes, ortho_areas, yerr=ortho_errors, 
                 label='Orthogonal sampling', color=colors[2], marker='^',
-                linestyle='-', CAPsize=CAP, markersize=MARKER_SIZE, 
+                linestyle='-', capsize=CAP, markersize=MARKER_SIZE, 
                 linewidth=LW, alpha=ALPHA)
     ax.errorbar(sizes, masking_areas, yerr=masking_errors, 
                 label='Custom sampling', color=colors[4], marker='x',
-                linestyle='-', CAPsize=CAP, markersize=MARKER_SIZE,
+                linestyle='-', capsize=CAP, markersize=MARKER_SIZE,
                 linewidth=LW, alpha=ALPHA)
     ax.axhline(y=LIT_AREA, color=colors[3],
                linestyle='--', label="$A_{M} = 1.5052$")
@@ -105,16 +105,16 @@ def plot_comparison(sizes, max_iter):
     axins = zoomed_inset_axes(ax, zoom=5, loc=4, bbox_to_anchor=(1.015, 0.798),
                               bbox_transform=ax.transAxes)
     axins.errorbar(sizes, uniform_areas, yerr=uniform_errors,
-                   color=colors[0], marker='s', linestyle='-', CAPsize=CAP,
+                   color=colors[0], marker='s', linestyle='-', capsize=CAP,
                    markersize=MARKER_SIZE, linewidth=LW, alpha=ALPHA)
     axins.errorbar(sizes, hypercube_areas, yerr=hypercube_errors,
-                   color=colors[1], marker='o', linestyle='-', CAPsize=CAP,
+                   color=colors[1], marker='o', linestyle='-', capsize=CAP,
                    markersize=MARKER_SIZE, linewidth=LW, alpha=ALPHA)
     axins.errorbar(sizes, ortho_areas, yerr=ortho_errors,
-                   color=colors[2], marker='^', linestyle='-', CAPsize=CAP,
+                   color=colors[2], marker='^', linestyle='-', capsize=CAP,
                    markersize=MARKER_SIZE, linewidth=LW, alpha=ALPHA)
     axins.errorbar(sizes, masking_areas, yerr=masking_errors,
-                   color=colors[4], marker='x', linestyle='-', CAPsize=CAP,
+                   color=colors[4], marker='x', linestyle='-', capsize=CAP,
                    markersize=MARKER_SIZE, linewidth=LW, alpha=ALPHA)
     axins.axhline(y=LIT_AREA, color=colors[3], linestyle='--', alpha=0.8,
                   linewidth=0.8)
@@ -133,9 +133,9 @@ def plot_comparison(sizes, max_iter):
 
     # Draw connecting lines between inset and main plot.
     mark_inset(ax, axins, loc1=1, loc2=3, fc="none", ec="0.5",
-               LW=0.5)
+               lw=0.5)
     mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5",
-               LW=0.5)
+               lw=0.5)
     ax.tick_params(axis='x', labelsize=FONT_SIZE)
     ax.tick_params(axis='y', labelsize=FONT_SIZE)
     ax.set_ylim(0.8, 2.36)
