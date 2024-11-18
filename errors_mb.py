@@ -2,8 +2,6 @@ import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
 
-#plt.rcParams['text.usetex'] = True
-
 def convergence(N, i, method='uniform'):
     '''
     Compute |A_js - A_is| for all j < i
@@ -22,40 +20,6 @@ def convergence(N, i, method='uniform'):
     A_j_list = np.array(A_list)
     deviation = np.abs(A_j_list - A_iN)
     return deviation, std_list
-
-
-def std_mandelbrot(N, i, M=10):
-    '''
-    std of M Areas
-    '''
-    list = []
-    for n in range(M):
-        list.append(mandelbrot.mc_area(N, i))
-    std = np.std(np.array(list))
-    return std
-
-def sample_std_mandelbrot(N, i, M=10):
-    '''
-    sample variance -- std. so n-1. zelfde als ddof=1 in np.std.
-    '''
-    Xi = []
-    for n in range(M):
-        Xi.append(mandelbrot.mc_area(N, i))
-    Xi = np.array(Xi)
-    Xmean = Xi.mean()
-    sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) -1)
-
-    return np.sqrt(sample_var)
-
-def sample_var_from_list(list):
-    '''
-    input: list of area sims
-    output: sample variance
-    '''
-    Xi = np.array(list)
-    Xmean = Xi.mean()
-    sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) - 1)
-    return sample_var
 
 def result(N, i, method='uniform'):
     '''
