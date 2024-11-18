@@ -1,3 +1,34 @@
+"""
+Custom Masing and Orthogonal Sampling of the Mandelbrot Set
+
+This module provides tools for a custom masking/adaptive orthogonal 
+sampling method of the Mandelbrot set by generating samples orthogonally 
+within a masked grid. The grid is adjusted based on the boundaries of 
+the Mandelbrot set.
+This module includes:
+
+1. Adaptive Grid Sampling:
+   - Constructs a masked grid to identify valid areas of the Mandelbrot 
+     set.
+   - Generates sample points orthogonally from each cell in the grid.
+
+2. Visualization:
+   - Visualizes the adaptive grid sample space with highlighted valid 
+     regions.
+
+Modules Imported:
+- matplotlib.pyplot: For visualization of the adaptive sample space.
+- numpy: For numerical computations, grid creation, and sampling.
+- mandelbrot: Provides the function to evaluate whether a point lies 
+              within the Mandelbrot set.
+
+Usage:
+Run 'adaptive' to calculate the area and generate sample points from 
+the Mandelbrot set. Run 'adaptive_sample_space' to visualize the 
+adaptive grid sample space. 
+"""
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -99,6 +130,6 @@ def adaptive_sample_space(area_filled):
     plt.xlabel('Real Part', fontsize=12)
     plt.ylabel('Imaginary Part', fontsize=12)
     plt.grid()
-    plt.savefig(f'Figures/Adaptive Sample Space.pdf',
+    plt.savefig('Figures/Adaptive Sample Space.pdf',
                 bbox_inches='tight', format='pdf')
     plt.show()
