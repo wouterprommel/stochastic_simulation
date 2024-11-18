@@ -96,7 +96,7 @@ def pixel_count_area(img_size = 1000):
     plt.ylabel('Imaginary Part', fontsize=28)
     plt.tick_params(axis='x', labelsize=20)
     plt.tick_params(axis='y', labelsize=20)
-    plt.savefig(f'Figures/Mandelbrot.pdf', format='pdf')
+   #plt.savefig(f'Figures/Mandelbrot.pdf', format='pdf')
     plt.show()
 
 
@@ -138,7 +138,7 @@ def plot_samples():
 
 if __name__ == "__main__":
     #plot_samples()
-    pixel_count_area()
+    #pixel_count_area()
     timeing()
 
     # single value itteration
