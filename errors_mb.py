@@ -1,8 +1,7 @@
-import mandelbrot
+"""This module contains functions for computing the error of the area estimate of the Mandelbrot set."""
 import matplotlib.pyplot as plt
 import numpy as np
-
-#plt.rcParams['text.usetex'] = True
+import mandelbrot 
 
 def convergence(N, i, method='uniform'):
     '''
@@ -13,8 +12,6 @@ def convergence(N, i, method='uniform'):
     std_list = []
     A_iN, std = mandelbrot.mc_area(N, i, std=True, method=method)
     for j in range(10, i):
-        if j % (i//2) == 0: print('half')
-
         A_jN, std = mandelbrot.mc_area(N, j, std=True, method=method)
         std_list.append(std)
         A_list.append(A_jN)
@@ -23,86 +20,47 @@ def convergence(N, i, method='uniform'):
     deviation = np.abs(A_j_list - A_iN)
     return deviation, std_list
 
-
-def std_mandelbrot(N, i, M=10):
+def result(N, i, method='uniform'):
     '''
-    std of M Areas
-    '''
-    list = []
-    for n in range(M):
-        list.append(mandelbrot.mc_area(N, i))
-    std = np.std(np.array(list))
-    return std
-
-def sample_std_mandelbrot(N, i, M=10):
-    '''
-    sample variance -- std. so n-1. zelfde als ddof=1 in np.std.
-    '''
-    Xi = []
-    for n in range(M):
-        Xi.append(mandelbrot.mc_area(N, i))
-    Xi = np.array(Xi)
-    Xmean = Xi.mean()
-    sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) -1)
-
-    return np.sqrt(sample_var)
-
-def sample_var_from_list(list):
-    '''
-    input: list of area sims
-    output: sample variance
-    '''
-    Xi = np.array(list)
-    Xmean = Xi.mean()
-    sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) - 1)
-    return sample_var
-
-def gen_std(N, i, Set_std=0.0015):
-    '''
-    input A_iN (Xi), wanted std
-    output, mean(X), sample std S, n
+    Compute Area 10x give confidence interval at p=95%
     '''
     list = []
-    for n in range(3):
-        list.append(mandelbrot.mc_area(N, i))
+    for n in range(10):
+        list.append(mandelbrot.mc_area(N, i, method=method))
 
-    S2 = sample_var_from_list(list)
+    S = np.std(list, ddof=1)
     n = len(list)
-    while np.sqrt(S2/n) > Set_std:
-        list.append(mandelbrot.mc_area(N, i))
-        S2 = sample_var_from_list(list)
-        n = len(list)
-        if n % 100 == 0:
-            print(n, np.sqrt(S2/n))
+    a = 1.96*S/np.sqrt(n) # Radius of confidence interval
 
+    return f'{method}: {np.mean(np.array(list))} +- {a}, used {n} simulations'
 
-    return np.mean(np.array(list)), np.sqrt(S2), n
-plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
-plt.figure(figsize=(5.91, 3.6))
-colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
+print(result(int(400*400), 150, 'uniform'))
+print(result(int(400*400), 150, 'hypercube'))
+print(result(int(400*400), 150, 'orthogonal'))
+print(result(int(400*400), 150, 'adaptive'))
+
+quit()
+
 deviation1, std1 = convergence(1e4, 200)
 deviation2, std2 = convergence(1e4, 200, method='orthogonal')
 deviation3, std3 = convergence(1e4, 200, method='hypercube')
-deviation4, std4 = convergence(1e4, 200, method='masking')
+deviation4, std4 = convergence(1e4, 200, method='adaptive')
 
+colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
+
+plt.figure(figsize=(5.91, 3.6))
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
 plt.plot(deviation1, label='$|A_{j,s} - A_{i,s}|$ (Uniform sampling)', color=colors[0],  linestyle='-', alpha = 0.6)
-#plt.plot(std1, label='$\sigma_{A_{i,s}}$ ($10^{4}$ samples)', color=colors[0], linestyle='--')
-
 plt.plot(deviation3, label='$|A_{j,s} - A_{i,s}|$ (Hypercube sampling)', color=colors[1],  linestyle='-', alpha = 0.6)
 plt.plot(deviation2, label='$|A_{j,s} - A_{i,s}|$ (Orthogonal sampling)', color=colors[2], linestyle='-', alpha = 0.6)
 plt.plot(deviation4, label='$|A_{j,s} - A_{i,s}|$ (Custom sampling)', color=colors[3],  linestyle='-', alpha = 0.6)
-#plt.plot(std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ samples)', color=colors[2], linestyle='--')
-#plt.yscale('log')
 plt.tick_params(axis='x', labelsize=9)
 plt.tick_params(axis='y', labelsize=9)
 plt.legend(fontsize=9)
-#plt.title('Convergence of the area estimate', fontsize=30)
 plt.xlabel('Iterations', fontsize=9)
 plt.ylabel('$|A_{j,s} - A_{i,s}|$', fontsize=9)
 plt.grid()
 plt.savefig(f'Figures/Convergence_n=1e4_i=200.pdf', format='pdf')
 plt.show()
 
-# X, S, n = gen_std(10000, 80)
-# print(f'{X} +- {1.96*S/np.sqrt(n)}')

@@ -76,7 +76,7 @@ def plot_comparison(sample_sizes, max_iter):
     ax.legend(fontsize=font_size, loc= 'lower right')
     ax.set_xscale('log')
     ax.grid(True)
-    plt.savefig(f'Figure/Estimated_Area_vs_Number_of_Samples_{max_iter}_iterations.pdf', bbox_inches='tight', format='pdf')
+    plt.savefig(f'Figures/Estimated_Area_vs_Number_of_Samples_{max_iter}_iterations.pdf', bbox_inches='tight', format='pdf')
     plt.show()
 
     return uniform_areas, uniform_errors, hypercube_areas, hypercube_errors, ortho_areas, ortho_errors, masking_areas, masking_errors

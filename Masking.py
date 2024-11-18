@@ -66,27 +66,20 @@ def adaptive(img_size, i_space, Z_boundary, sample_size):
     # sample size may differ, so change in mb
     samples = list(zip(x_samples, y_samples))
 
-    #adaptive_sample_space(samples, pixels_filled, i_space, Z_boundary)
-    print("lenght samples: ", len(samples))
-    print("correct length: ", sample_size)
-
     return area, pixels_filled, samples
 
 
 def adaptive_sample_space(area_filled, i_space, Z_boundary):
     """Makes a plot of the adaptive grid sample space area and samples."""
-    #plt.rc('text', usetex=True)
-    #plt.rc('font', family='serif')
-    
 
     plt.figure(figsize=(12, 8))
     plt.imshow(area_filled, extent=(-2, 1, -1.5, 1.5), alpha=0.25)
-    plt.tick_params(axis='x', labelsize=20)
-    plt.tick_params(axis='y', labelsize=20)
-    plt.xlabel('Real Part', fontsize=28)
-    plt.ylabel('Imaginary Part', fontsize=28)
-    plt.title(f'Sampled Points with Max Iterations = {i_space} and Z boundary = {Z_boundary}', fontsize=30)
-    plt.gca().set_aspect('equal')   
+    plt.tick_params(axis='x', labelsize=12)
+    plt.tick_params(axis='y', labelsize=12)
+    plt.xlabel('Real Part', fontsize=12)
+    plt.ylabel('Imaginary Part', fontsize=12)
+    #plt.title(f'Sampled Points with Max Iterations = {i_space} and Z boundary = {Z_boundary}', fontsize=8)
+    #plt.gca().set_aspect('equal')   
     plt.grid()
-    plt.savefig(f'Adaptive Sample Space.pdf', format='pdf')
+    plt.savefig(f'Figures/Adaptive Sample Space.pdf', bbox_inches='tight', format='pdf')
     plt.show()

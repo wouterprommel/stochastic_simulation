@@ -63,7 +63,6 @@ def pixel_count_area(img_size = 1000):
 
     x_axis = np.linspace(-2, 1, img_size)
     y_axis = np.linspace(-1.5, 1.5, img_size)
-    image = np.zeros((img_size, img_size, 3)) # x, y, rgb
     max_iteration = 80
 
     # To generate inferno map
@@ -72,19 +71,14 @@ def pixel_count_area(img_size = 1000):
     for j, x in enumerate(x_axis):
         if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
-            color = eval_point_mandelbrot(x, y, max_iteration)
 
             # To generate inferno map
             mandelbrot_set[i, j] = eval_point_mandelbrot(x, y, max_iteration)
-            image[i, j, 0] = color # set red color (0-1)
 
-    S = np.sum(image[:, :, 0] == 1)
+    S = np.sum(mandelbrot_set[:, :] == 1)
     A = S/(img_size*img_size) * 3*3
     print(f"Area from pixel count: {A=}")
     print(f"The relative error compared to the literature value is: {np.abs(A - 1.5065)/1.5065*100}%.")
-
-    #plt.imshow(image)
-    #plt.show()
 
     # To generate inferno map
     plt.figure(figsize=(5.91/2, 3.6/2))
@@ -137,6 +131,7 @@ def plot_samples():
 
 
 if __name__ == "__main__":
+
     # Use LaTex font for labels
     plt.rc('text', usetex=True)
     plt.rc('font', family='serif')
