@@ -1,31 +1,36 @@
-import Sample_methods
-import Masking
+'''This module computes the Mandelbrot set and estimates its area using a pixel counting method and Monte Carlo methods.'''
 import numpy as np
 import matplotlib.pyplot as plt
 import time
 
+import Sample_methods
+import Masking
 
 def eval_point_mandelbrot(x, y, i):
+    '''
+    Determine if a point is in the mandelbrot set
+    return: range 0-1
+    '''
     max_iteration = i
     c = complex(x, y)
     z = 0
     iter = 0
     bounded = True
-    itterating = True
-    while bounded and itterating:
+    iterating = True
+    while bounded and iterating:
         bounded = abs(z) <= 2
-        itterating = iter < max_iteration
+        iterating = iter < max_iteration
         z = z*z + c
         iter += 1
     return (iter-1)/max_iteration # set red color (0-1)
 
-
 def mc_area(N, i, method='uniform', std=False):
-    # y from -1.5 to 1.5
-    # x form -2 to 1
+    '''
+    Compute the area of the Mandelbrot set using different sampling methods
+    return: float
+    '''
     area_total = 9
     N = int(N)
-
     if method == 'uniform':
         X = -1.5 + 3*np.random.rand(N)
         Y = -2 + 3*np.random.rand(N)
@@ -50,17 +55,19 @@ def mc_area(N, i, method='uniform', std=False):
         evaluations.append(eval)
 
     area = area_total * sum(evaluations) / len(evaluations)
-    #print(f"Area from MC: {area=}")
     std_value = area_total * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
 
-    if std == True:
+    if std is True:
         return area, std_value
-    else: 
+    else:
         return area
 
 
 def pixel_count_area(img_size = 1000):
-
+    '''	
+    Computes the area of the Mandelbrot set using a pixel counting method
+    return: float
+    '''
     x_axis = np.linspace(-2, 1, img_size)
     y_axis = np.linspace(-1.5, 1.5, img_size)
     max_iteration = 80
@@ -69,10 +76,7 @@ def pixel_count_area(img_size = 1000):
     mandelbrot_set = np.zeros((img_size, img_size))
 
     for j, x in enumerate(x_axis):
-        if j % 100 == 0: print(j)
         for i, y in enumerate(y_axis):
-
-            # To generate inferno map
             mandelbrot_set[i, j] = eval_point_mandelbrot(x, y, max_iteration)
 
     S = np.sum(mandelbrot_set[:, :] == 1)
@@ -80,19 +84,16 @@ def pixel_count_area(img_size = 1000):
     print(f"Area from pixel count: {A=}")
     print(f"The relative error compared to the literature value is: {np.abs(A - 1.5065)/1.5065*100}%.")
 
-    # To generate inferno map
     plt.figure(figsize=(5.91/2, 3.6/2))
     plt.imshow(mandelbrot_set, extent=(-2, 1, -1.5, 1.5), cmap='inferno')
     colorbar = plt.colorbar()
     colorbar.ax.tick_params(labelsize=8)
-    #plt.title('Mandelbrot Fractal', fontsize=30)
     plt.xlabel('Real Part', fontsize=8)
     plt.ylabel('Imaginary Part', fontsize=8)
     plt.tick_params(axis='x', labelsize=8)
     plt.tick_params(axis='y', labelsize=8)
     plt.savefig(f'Figures/Mandelbrot.pdf', bbox_inches='tight', format='pdf')
     plt.show()
-
 
 def timeing():
     '''
@@ -116,46 +117,21 @@ def timeing():
     print(mc_area(N, 80, 'adaptive'))
     print (np.round(time.time() - t, 3), 'sec elapsed for adaptive orthogonal mb')
 
-
 def plot_samples():
     ''' 
-    plot sample points
+    Plot sample points
     '''
     N = int(25)
     samples = Sample_methods.hypercube(N)
-    #samples2 = hypercube.hypercube(N) # set func to return samples first
-    samples2 = Sample_methods.orthogonal(N) # set func to return samples first
+    samples2 = Sample_methods.orthogonal(N) # Set func to return samples first
     plt.scatter(*zip(*samples))
     plt.scatter(*zip(*samples2))
     plt.show()
 
 
 if __name__ == "__main__":
-
     # Use LaTex font for labels
     plt.rc('text', usetex=True)
     plt.rc('font', family='serif')
-    #plot_samples()
     pixel_count_area()
     timeing()
-
-    # single value itteration
-    """ a = 0.28
-    b = 0.03
-    xn = 0
-    yn = 0
-    X = [xn]
-    Y = [yn]
-    for i in range(100):
-        xnp1 = xn*xn - yn*yn + a # x_{n+1}
-        ynp1 = 2*xn*yn + b # y_{n+1}
-        X.append(xnp1)
-        Y.append(ynp1)
-        xn = xnp1
-        yn = ynp1
-
-    print(X)
-    print(Y)
-
-    plt.scatter(X, Y)
-    plt.show() """

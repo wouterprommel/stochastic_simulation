@@ -39,8 +39,6 @@ print(result(int(400*400), 150, 'hypercube'))
 print(result(int(400*400), 150, 'orthogonal'))
 print(result(int(400*400), 150, 'adaptive'))
 
-quit()
-
 deviation1, std1 = convergence(1e4, 200)
 deviation2, std2 = convergence(1e4, 200, method='orthogonal')
 deviation3, std3 = convergence(1e4, 200, method='hypercube')
