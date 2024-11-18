@@ -38,8 +38,8 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 
-import Sample_methods
 import Masking
+import Sample_methods
 
 
 def eval_point_mandelbrot(x, y, i):

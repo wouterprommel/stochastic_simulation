@@ -28,7 +28,6 @@ the Mandelbrot set. Run 'adaptive_sample_space' to visualize the
 adaptive grid sample space. 
 """
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 
