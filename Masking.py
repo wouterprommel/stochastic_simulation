@@ -1,7 +1,11 @@
-import mandelbrot
+'''
+This module contains the functions for the adaptive sampling method.
+'''
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import binary_fill_holes
+import mandelbrot
+
 
 
 def adaptive(img_size, i_space, Z_boundary, sample_size):

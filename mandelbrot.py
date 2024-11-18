@@ -1,7 +1,10 @@
-'''This module computes the Mandelbrot set and estimates its area using a pixel counting method and Monte Carlo methods.'''
+'''
+This module computes the Mandelbrot set and estimates its area using a pixel counting method and Monte Carlo methods.
+'''
+import time
 import numpy as np
 import matplotlib.pyplot as plt
-import time
+
 
 import Sample_methods
 import Masking
