@@ -2,8 +2,6 @@ import mandelbrot
 import matplotlib.pyplot as plt
 import numpy as np
 
-#plt.rcParams['text.usetex'] = True
-
 def convergence(N, i, method='uniform'):
     '''
     Compute |A_js - A_is| for all j < i
@@ -23,60 +21,29 @@ def convergence(N, i, method='uniform'):
     deviation = np.abs(A_j_list - A_iN)
     return deviation, std_list
 
-
-def std_mandelbrot(N, i, M=10):
+def result(N, i, method='uniform'):
     '''
-    std of M Areas
-    '''
-    list = []
-    for n in range(M):
-        list.append(mandelbrot.mc_area(N, i))
-    std = np.std(np.array(list))
-    return std
-
-def sample_std_mandelbrot(N, i, M=10):
-    '''
-    sample variance -- std. so n-1. zelfde als ddof=1 in np.std.
-    '''
-    Xi = []
-    for n in range(M):
-        Xi.append(mandelbrot.mc_area(N, i))
-    Xi = np.array(Xi)
-    Xmean = Xi.mean()
-    sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) -1)
-
-    return np.sqrt(sample_var)
-
-def sample_var_from_list(list):
-    '''
-    input: list of area sims
-    output: sample variance
-    '''
-    Xi = np.array(list)
-    Xmean = Xi.mean()
-    sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) - 1)
-    return sample_var
-
-def gen_std(N, i, Set_std=0.0015):
-    '''
-    input A_iN (Xi), wanted std
-    output, mean(X), sample std S, n
+    Compute Area 10x give confidence interval at p=95%
     '''
     list = []
-    for n in range(3):
-        list.append(mandelbrot.mc_area(N, i))
+    for n in range(10):
+        list.append(mandelbrot.mc_area(N, i, method=method))
 
-    S2 = sample_var_from_list(list)
+    S = np.std(list, ddof=1)
     n = len(list)
-    while np.sqrt(S2/n) > Set_std:
-        list.append(mandelbrot.mc_area(N, i))
-        S2 = sample_var_from_list(list)
-        n = len(list)
-        if n % 100 == 0:
-            print(n, np.sqrt(S2/n))
+    a = 1.96*S/np.sqrt(n) # a radius of confidence interval
+
+    return f'{method}: {np.mean(np.array(list))} +- {a}, used {n} simulations'
 
 
-    return np.mean(np.array(list)), np.sqrt(S2), n
+print(result(int(400*400), 150, 'uniform'))
+print(result(int(400*400), 150, 'hypercube'))
+print(result(int(400*400), 150, 'orthogonal'))
+print(result(int(400*400), 150, 'masking'))
+
+quit()
+
+plt.figure(figsize=(12, 8))
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 plt.figure(figsize=(5.91, 3.6))
