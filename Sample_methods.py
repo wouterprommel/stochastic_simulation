@@ -18,8 +18,6 @@ methods and evaluate them against the Mandelbrot set.
 
 import numpy as np
 
-import mandelbrot
-
 
 def hypercube(N):
     """
@@ -34,14 +32,14 @@ def hypercube(N):
     Mandelbrot set grid using Latin hypercube sampling.
     """
     # Configure grid dimensions.
-    edges = N+1 
+    edges = N+1
     x_axis = np.linspace(-2, 1, edges)
     y_axis = np.linspace(-1.5, 1.5, edges)
 
     x_samples = []
     y_samples = []
 
-    # Sample within each interval for x and y.
+    # Assigns x and y value to samples from list of options.
     for i in range(N):
         x = np.random.uniform(x_axis[i], x_axis[i+1])
         y = np.random.uniform(y_axis[i], y_axis[i+1])
@@ -51,11 +49,11 @@ def hypercube(N):
 
     # Shuffle y samples to make sure there is no correlation.
     np.random.shuffle(y_samples)
-    samples = list(zip(x_samples, y_samples))
+    hypercube_samples = list(zip(x_samples, y_samples))
 
-    return samples
+    return hypercube_samples
 
- 
+
 def orthogonal(N):
     """
     Applies orthogonal sampling to the Mandelbrot set grid of x and y 
@@ -75,10 +73,11 @@ def orthogonal(N):
     # Ensure that N * N is a perfect square.
     k = int(np.sqrt(N))
     if k * k != N:
-        raise ValueError("NxN must be a perfect square for orthogonal sampling.")
-    
-    # Define the main grid edges.
-    edges = k+1
+        raise ValueError(
+            "NxN must be a perfect square for orthogonal sampling.")
+
+    # Define main grid.
+    edges = k+1  # Interval edges.
     x_axis = np.linspace(-2, 1, edges)
     y_axis = np.linspace(-1.5, 1.5, edges)
 
@@ -97,32 +96,6 @@ def orthogonal(N):
         x_samples.append(x)
         y_samples.append(y)
 
-    samples = list(zip(x_samples, y_samples))
+    ortho_samples = list(zip(x_samples, y_samples))
 
-    return samples
-
-
-if __name__ == "__main__":
-    # Number of samples to generate. 
-    N = 9
-
-    # Evaluate points using Latin Hypercube sampling.
-    samples = hypercube(N)
-    max_iteration = 50
-    evaluations_hyper = []
-
-    print("for the hypercube case: \n")
-    for x, y in samples:
-        evaluation_hyper = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
-        evaluations_hyper.append(evaluation_hyper)
-        print(f"Evaluated point ({x}, {y}): {evaluation_hyper}")
-
-    # Evaluate points using orthogonal sampling.
-    evaluations_ortho = []
-    samples = orthogonal(N)
-
-    print("\nfor the orthogonal case:\n")
-    for x, y in samples:
-        evaluation_ortho = mandelbrot.eval_point_mandelbrot(x, y, max_iteration)
-        evaluations_ortho.append(evaluation_ortho)
-        print(f"Evaluated point ({x}, {y}): {evaluation_ortho}")
+    return ortho_samples
