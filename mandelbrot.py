@@ -87,16 +87,16 @@ def pixel_count_area(img_size = 1000):
     #plt.show()
 
     # To generate inferno map
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(5.91/2, 3.6/2))
     plt.imshow(mandelbrot_set, extent=(-2, 1, -1.5, 1.5), cmap='inferno')
     colorbar = plt.colorbar()
-    colorbar.ax.tick_params(labelsize=20)
-    plt.title('Mandelbrot Fractal', fontsize=30)
-    plt.xlabel('Real Part', fontsize=28)
-    plt.ylabel('Imaginary Part', fontsize=28)
-    plt.tick_params(axis='x', labelsize=20)
-    plt.tick_params(axis='y', labelsize=20)
-   #plt.savefig(f'Figures/Mandelbrot.pdf', format='pdf')
+    colorbar.ax.tick_params(labelsize=8)
+    #plt.title('Mandelbrot Fractal', fontsize=30)
+    plt.xlabel('Real Part', fontsize=8)
+    plt.ylabel('Imaginary Part', fontsize=8)
+    plt.tick_params(axis='x', labelsize=8)
+    plt.tick_params(axis='y', labelsize=8)
+    plt.savefig(f'Figures/Mandelbrot.pdf', bbox_inches='tight', format='pdf')
     plt.show()
 
 
@@ -137,8 +137,11 @@ def plot_samples():
 
 
 if __name__ == "__main__":
+    # Use LaTex font for labels
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='serif')
     #plot_samples()
-    #pixel_count_area()
+    pixel_count_area()
     timeing()
 
     # single value itteration
