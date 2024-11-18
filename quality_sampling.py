@@ -69,7 +69,7 @@ def plot_comparison(sizes, max_iter):
         ortho_A, ortho_err = mandelbrot.mc_area(
             s, max_iter, method='orthogonal', std=True)
         masking_A, masking_err = mandelbrot.mc_area(
-            s, max_iter, method='masking', std=True)
+            s, max_iter, method='adaptive', std=True)
 
         uniform_areas.append(uniform_A)
         uniform_errors.append(uniform_err)

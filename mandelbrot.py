@@ -108,6 +108,10 @@ def mc_area(N, i, method='uniform', std=False):
         area_total, samples = Masking.adaptive(
             img_size, i_space, z_boundary, N)
         N = len(samples)
+    else:
+        ValueError("Invalid sampling method. Choose from 'uniform', \
+                   'hypercube', 'orthogonal', 'adaptive'.")
+    
 
     # Evaluate to determine if a sample belongs to the Mandelbrot set.
     evaluations = []
