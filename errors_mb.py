@@ -77,8 +77,9 @@ def gen_std(N, i, Set_std=0.0015):
 
 
     return np.mean(np.array(list)), np.sqrt(S2), n
-
-plt.figure(figsize=(12, 8))
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+plt.figure(figsize=(5.91, 3.2))
 colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
 deviation1, std1 = convergence(1e4, 200)
 deviation2, std2 = convergence(1e4, 200, method='orthogonal')
@@ -93,12 +94,12 @@ plt.plot(deviation2, label='$|A_{j,s} - A_{i,s}|$ (method: orthogonal)', color=c
 plt.plot(deviation4, label='$|A_{j,s} - A_{i,s}|$ (method: masking)', color=colors[3],  linestyle='-', alpha = 0.6)
 #plt.plot(std2, label='$\sigma_{A_{i,s}}$ ($10^{8}$ samples)', color=colors[2], linestyle='--')
 #plt.yscale('log')
-plt.tick_params(axis='x', labelsize=20)
-plt.tick_params(axis='y', labelsize=20)
-plt.legend(fontsize=20)
+plt.tick_params(axis='x', labelsize=8)
+plt.tick_params(axis='y', labelsize=8)
+plt.legend(fontsize=8)
 #plt.title('Convergence of the area estimate', fontsize=30)
-plt.xlabel('Iterations', fontsize=28)
-plt.ylabel('$|A_{j,s} - A_{i,s}|$', fontsize=28)
+plt.xlabel('Iterations', fontsize=8)
+plt.ylabel('$|A_{j,s} - A_{i,s}|$', fontsize=8)
 plt.grid()
 plt.savefig(f'Figures/Convergence_n=1e4_i=200.pdf', format='pdf')
 plt.show()
