@@ -57,26 +57,26 @@ def sample_var_from_list(list):
     sample_var = np.sum((Xi - Xmean)**2)/(len(Xi) - 1)
     return sample_var
 
-def gen_std(N, i, Set_std=0.0015):
+def result(N, i, method='uniform'):
     '''
-    input A_iN (Xi), wanted std
-    output, mean(X), sample std S, n
+    Compute Area 10x give confidence interval at p=95%
     '''
     list = []
-    for n in range(3):
-        list.append(mandelbrot.mc_area(N, i))
+    for n in range(10):
+        list.append(mandelbrot.mc_area(N, i, method=method))
 
-    S2 = sample_var_from_list(list)
+    S = np.std(list, ddof=1)
     n = len(list)
-    while np.sqrt(S2/n) > Set_std:
-        list.append(mandelbrot.mc_area(N, i))
-        S2 = sample_var_from_list(list)
-        n = len(list)
-        if n % 100 == 0:
-            print(n, np.sqrt(S2/n))
+    a = 1.96*S/np.sqrt(n) # a radius of confidence interval
 
+    return f'{method}: {np.mean(np.array(list))} +- {a}, used {n} simulations'
 
-    return np.mean(np.array(list)), np.sqrt(S2), n
+print(result(int(400*400), 150, 'uniform'))
+print(result(int(400*400), 150, 'hypercube'))
+print(result(int(400*400), 150, 'orthogonal'))
+print(result(int(400*400), 150, 'masking'))
+
+quit()
 
 plt.figure(figsize=(12, 8))
 colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
