@@ -1,5 +1,6 @@
 '''
-This module computes the Mandelbrot set and estimates its area using a pixel counting method and Monte Carlo methods.
+This module computes the Mandelbrot set and estimates its area 
+using a pixel counting method and Monte Carlo methods.
 '''
 import time
 import numpy as np
@@ -17,15 +18,15 @@ def eval_point_mandelbrot(x, y, i):
     max_iteration = i
     c = complex(x, y)
     z = 0
-    iter = 0
+    iteration = 0
     bounded = True
     iterating = True
     while bounded and iterating:
         bounded = abs(z) <= 2
-        iterating = iter < max_iteration
+        iterating = iteration < max_iteration
         z = z*z + c
-        iter += 1
-    return (iter-1)/max_iteration # set red color (0-1)
+        iteration += 1
+    return (iteration-1)/max_iteration # set red color (0-1)
 
 def mc_area(N, i, method='uniform', std=False):
     '''
@@ -54,8 +55,8 @@ def mc_area(N, i, method='uniform', std=False):
 
     evaluations = []
     for x, y in samples:
-        eval = eval_point_mandelbrot(x, y, i) == 1
-        evaluations.append(eval)
+        evaluation = eval_point_mandelbrot(x, y, i) == 1
+        evaluations.append(evaluation)
 
     area = area_total * sum(evaluations) / len(evaluations)
     std_value = area_total * np.std(evaluations, ddof=1)/np.sqrt(len(evaluations)) # sample variance
@@ -85,7 +86,8 @@ def pixel_count_area(img_size = 1000):
     S = np.sum(mandelbrot_set[:, :] == 1)
     A = S/(img_size*img_size) * 3*3
     print(f"Area from pixel count: {A=}")
-    print(f"The relative error compared to the literature value is: {np.abs(A - 1.5065)/1.5065*100}%.")
+    print("The relative error compared to the literature value is:",
+          f"{np.abs(A - 1.5065)/1.5065*100}%.")
 
     plt.figure(figsize=(5.91/2, 3.6/2))
     plt.imshow(mandelbrot_set, extent=(-2, 1, -1.5, 1.5), cmap='inferno')
@@ -95,7 +97,7 @@ def pixel_count_area(img_size = 1000):
     plt.ylabel('Imaginary Part', fontsize=8)
     plt.tick_params(axis='x', labelsize=8)
     plt.tick_params(axis='y', labelsize=8)
-    plt.savefig(f'Figures/Mandelbrot.pdf', bbox_inches='tight', format='pdf')
+    plt.savefig('Figures/Mandelbrot.pdf', bbox_inches='tight', format='pdf')
     plt.show()
 
 def timeing():
