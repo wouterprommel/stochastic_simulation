@@ -36,10 +36,10 @@ def result(N, i, method='uniform'):
     return f'{method}: {np.mean(np.array(list))} +- {a}, used {n} simulations'
 
 
-print(result(int(400*400), 150, 'uniform'))
-print(result(int(400*400), 150, 'hypercube'))
-print(result(int(400*400), 150, 'orthogonal'))
-print(result(int(400*400), 150, 'masking'))
+#print(result(int(400*400), 150, 'uniform'))
+#print(result(int(400*400), 150, 'hypercube'))
+#print(result(int(400*400), 150, 'orthogonal'))
+print(result(int(400*400), 150, 'adaptive'))
 
 quit()
 
@@ -51,7 +51,7 @@ colors = ['tab:blue', 'tab:green', 'tab:red', "tab:orange"]
 deviation1, std1 = convergence(1e4, 200)
 deviation2, std2 = convergence(1e4, 200, method='orthogonal')
 deviation3, std3 = convergence(1e4, 200, method='hypercube')
-deviation4, std4 = convergence(1e4, 200, method='masking')
+deviation4, std4 = convergence(1e4, 200, method='adaptive')
 
 plt.plot(deviation1, label='$|A_{j,s} - A_{i,s}|$ (Uniform sampling)', color=colors[0],  linestyle='-', alpha = 0.6)
 #plt.plot(std1, label='$\sigma_{A_{i,s}}$ ($10^{4}$ samples)', color=colors[0], linestyle='--')
