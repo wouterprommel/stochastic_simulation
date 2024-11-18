@@ -101,7 +101,7 @@ plt.legend(fontsize=9)
 plt.xlabel('Iterations', fontsize=9)
 plt.ylabel('$|A_{j,s} - A_{i,s}|$', fontsize=9)
 plt.grid()
-plt.savefig(f'Figures/Convergence_n=1e6_i=200.pdf', format='pdf')
+plt.savefig(f'Figures/Convergence_n=1e4_i=200.pdf', format='pdf')
 plt.show()
 
 # X, S, n = gen_std(10000, 80)
